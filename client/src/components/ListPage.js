@@ -13,6 +13,10 @@ class ListPage extends Component {
       this.state = {
         entries: []
     }
+
+    const emoji = ["🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🦝"];
+    this.user_emoji = emoji[Math.floor(Math.random() * emoji.length)];
+
   }
 
   async componentDidMount() {
@@ -28,9 +32,11 @@ class ListPage extends Component {
   }
 
   render() {
+
+                
     const entries = this.state.entries.map((e, i)=>
       <ListItem key={i}>
-        <Dot>{i+1}</Dot> {e.musician}, {e.city}, {e.year} <EditLink onClick={()=>{this.props.editEntry(e)}}>[edit]</EditLink>
+        {this.user_emoji} {e.musician} {e.city} {e.year} <EditLink onClick={()=>{this.props.editEntry(e)}}>[edit]</EditLink>
       </ListItem>);
     return (
       <div>
@@ -39,7 +45,7 @@ class ListPage extends Component {
         <p>This is your secret edit link: <a href={"#"+this.props.mcmmId}>{"#"+this.props.mcmmId}</a></p>
         <p>Bookmark it to manage your entries later or from other devices. If you lose it, you might lose access to your entries.</p>
       
-        <MapPage entries={this.state.entries}/>
+        <MapPage entries={this.state.entries} user_emoji={this.user_emoji}/>
       </div>
     );
   }

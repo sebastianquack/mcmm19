@@ -118,11 +118,18 @@ function enterNodes(n) {
     .attr("class", "node element")
     .call(force.drag);
 
-  g.append("svg:circle")
-      .style("opacity", 0.5);
+  /*g.append("svg:circle")
+      .style("opacity", 0.5);*/
+
+  /*g.append("svg:image")
+    .attr('x', -10)
+    .attr('y', -10)
+    .attr('width', 20)
+    .attr('height', 20)
+    .attr("xlink:href", "/images/dot.png")*/
 
   g.append("text")
-      .attr("dx", 12)
+      .attr("dx", -5)
       .attr("dy", ".25em");        
 }
 
@@ -284,8 +291,8 @@ function applyStyling() {
 
     node.select("text")
       .style("fill", (d)=>{return getNodeColor(d)})
-      .text(function(d) { return d.name.capitalize() })
-      .style("font-size", "11px");      
+      .text(function(d) { console.log(d.name); return d.name })
+      .style("font-size", "14px");      
 
     svg.selectAll(".element").sort(function (a, b) { // sort active everything down
       if (a.active == b.active && a.type == b.type) return 0;

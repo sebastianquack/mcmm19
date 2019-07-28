@@ -26,10 +26,11 @@ class MapPage extends Component {
   componentDidUpdate(prevPros) {
     if(!this.markers && this.props.entries.length) {
       const icon = {
-        url: "/images/dot.png", // url
-        scaledSize: {height: 25, width: 25}, // scaled size
+        url: "/images/blank.png", // url
+        scaledSize: {height: 0, width: 0}, // scaled size
         origin: {x:0, y:0}, // origin
-        anchor: {x:12.5, y:12.5} // anchor
+        anchor: {x:12.5, y:12.5}, // anchor
+        labelOrigin: new google.maps.Point(12.5, 12.5)
       };
 
       this.markers = this.props.entries.map((e, index)=>
@@ -38,8 +39,8 @@ class MapPage extends Component {
           icon: icon,
           label: {
             color: "#fff",
-            fontSize: "12px",
-            text: (index + 1).toString(),
+            fontSize: "14px",
+            text: this.props.user_emoji,
           },
           map: this.map,
         })
@@ -52,8 +53,8 @@ class MapPage extends Component {
       const lines = this.props.entries.slice(0, -1).map((e, index)=>
         new google.maps.Polyline({
           path: [this.props.entries[index].cityLocation, this.props.entries[index+1].cityLocation],
-          geodesic: true,
-          strokeColor: '#444',
+          //geodesic: true,
+          strokeColor: '#aaa',
           strokeOpacity: 1.0,
           strokeWeight: 1
         })

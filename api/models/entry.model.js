@@ -78,12 +78,15 @@ module.exports = function (mongoose) {
             let handler = async function (request, h) {
               try {                
 
-                let musicians = await model.find({isDeleted: {$ne: true}}).distinct('musician');
+                let nodes = [];
+                let links = [];
+
+                const emoji = ["🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🦝"];
+                let user_ids = await model.find({isDeleted: {$ne: true}}).distinct('user_id');
                 
                 // assemble nodes
-                let nodes = [];
-
-                // add all music names as nodes
+                
+                /*let musicians = await model.find({isDeleted: {$ne: true}}).distinct('musician');
                 musicians.forEach((musician) => {
                   nodes.push({
                     name: musician,
@@ -94,29 +97,132 @@ module.exports = function (mongoose) {
                   });
                 })
 
+                let cities = await model.find({isDeleted: {$ne: true}}).distinct('city');
+                cities.forEach((city) => {
+                  nodes.push({
+                    name: city,
+                    id: city,
+                    key: city,
+                    type: "city",
+                    weight: 1
+                  });
+                })
+                
+                user_ids.forEach((user_id, index) => {
+                  nodes.push({
+                    name: emoji[Math.floor(Math.random() * emoji.length)],
+                    id: user_id,
+                    key: user_id,
+                    type: "user",
+                    weight: 1
+                  });
+                }) 
+
                 // assemble links - a link between two entries is created when they have the same user_id
 
-                let links = [];
+                // music - city links
+                //let all = await model.find({isDeleted: {$ne: true}});
+                all.forEach(e=>{
+                  let musicIndex = musicians.indexOf(e.musician);
+                  let cityIndex = cities.indexOf(e.city);
+                  let userIndex = user_ids.indexOf(e.user_id);
+
+                  // music - city
+                  links.push({
+                    source: musicIndex,
+                    target: musicians.length + cityIndex,
+                    value: 1
+                  });
+
+                  // user - music
+                  links.push({
+                    source: musicians.length + cities.length + userIndex,
+                    target: musicIndex,
+                    value: 1
+                  })
+
+                  // user - city
+                  links.push({
+                    source: musicians.length + cities.length + userIndex,
+                    target: musicians.length + cityIndex,
+                    value: 1
+                  })
+                })
+
+                /*
+                // music - music & city - city links 
+
+                // go over all individual users
                 let user_ids = await model.find({isDeleted: {$ne: true}}).distinct('user_id');
-
                 for(let i = 0; i < user_ids.length; i++) {
-                   
+                  
+                  // go over entries by this user
                   let user_entries = await model.find({user_id: user_ids[i], isDeleted: {$ne: true}});
-
                   user_entries.forEach((sourceEntry) => {
+                    
+                    // look at this entry's city and musician
                     let sourceIndex = musicians.indexOf(sourceEntry.musician);
+                    let sourceIndex2 = cities.indexOf(sourceEntry.city);
+                    
+                    // look at all this users other entries
                     user_entries.forEach((targetEntry) => {
+
+                      // add links for all musicians
                       let targetIndex = musicians.indexOf(targetEntry.musician);
-                      if(targetIndex != sourceIndex) {
+                      if(targetIndex > -1 && targetIndex != sourceIndex) {
                         links.push({
                           source: sourceIndex,
                           target: targetIndex,
                           value: 1
                         });   
                       }
+                      // add links to all cities
+                      let targetIndex2 = cities.indexOf(targetEntry.city);
+                      if(targetIndex2 > -1 && targetIndex2 != sourceIndex2) {
+                        links.push({
+                          source: musicians.length + sourceIndex2,
+                          target: musicians.length + targetIndex2,
+                          value: 1
+                        });   
+                      }
                     });
                   });
+                }*/
+
+                // try something simple - a node for each entry and links betwwen them
+                let user_index = 0;
+                for(let i = 0; i < user_ids.length; i++) {
+                  let user_id = user_ids[i];  
+                  let user_emoji = emoji[Math.floor(Math.random() * emoji.length)];
+                  
+                  let user_entries = await model.find({user_id: user_id, isDeleted: {$ne: true}}).sort({year: 1});
+                  
+                  console.log(user_entries);
+
+                  user_entries.forEach(e=>{
+                    nodes.push({
+                      name: user_emoji + " " + e.musician + " " + e.city + " " + e.year,
+                      id: e._id,
+                      key: e._id,
+                      type: "entry",
+                      weight: 1
+                    });
+
+                    if(user_entries.length > 1) {
+                      for(let j = user_index; j < user_index + user_entries.length - 1; j++) {
+                        links.push({
+                          source: j,
+                          target: j + 1,
+                          value: 1
+                        })
+                      }
+                    }
+                  }) 
+
+                  user_index += user_entries.length               
                 }
+
+                console.log(nodes, links);
 
                 return h.response({
                   nodes: nodes,
