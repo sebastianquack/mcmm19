@@ -5,7 +5,7 @@ import { apiUrl } from '../helpers'
 
 import styled from 'styled-components'
 
-import SimpleGraph from './SimpleGraph.js';
+import LineGraph from './LineGraph.js';
 import MapPage from './MapPage.js';
 
 class HomePage extends Component {
@@ -19,7 +19,6 @@ class HomePage extends Component {
   async componentDidMount() {
     axios.get(apiUrl + "/entries_by_users/")
     .then((response)=> {
-      console.log(response.data);
       this.setState({ data: response.data})    
     })
     .catch((e)=> {
@@ -32,11 +31,11 @@ class HomePage extends Component {
     return (
       <div>
         <h1>home page</h1>
-        <div style={{width: "100%", float: "left"}}>
+        <div style={{width: "100%"}}>
           <MapPage entries={this.state.data}/>
         </div>
-        <div style={{width: "100%", float: "left"}}>
-          <SimpleGraph/>
+        <div style={{width: "100%", marginTop: 20, marginBottom: 50}}>
+          <LineGraph/>
         </div>
       </div>
     );

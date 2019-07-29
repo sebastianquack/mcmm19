@@ -10,11 +10,11 @@ import * as d3 from 'd3'
 var width = 500,
     height = 400;
 
-var zoom = d3.behavior.zoom().scaleExtent([-5, 12]).on("zoom", zoomed);
+var zoom = d3.zoom().scaleExtent([-5, 12]).on("zoom", zoomed);
 
 var nodes, links, oldNodes, matchIndex, // data
   svg, node, link, // d3 selections
-  force = d3.layout.force()
+  force = d3.forceSimulation()
   .gravity(0.05)
   .distance(170)
   .charge(-100)

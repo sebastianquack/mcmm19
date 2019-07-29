@@ -315,6 +315,77 @@ module.exports = function (mongoose) {
             })
           },
 
+
+
+
+          /* get distribution of years
+
+
+
+          */
+
+          function (server, model, options, logger) {
+            const Log = logger.bind("get distribution of years")
+            let Boom = require('boom')
+
+            let handler = async function (request, h) {
+              try {
+                
+                let minYears = await model.find({}).sort({ "year": 1 }).limit(1)
+                let minYear = minYears[0].year;
+
+                let maxYears = await model.find({}).sort({ "year": -1 }).limit(1)
+                let maxYear = maxYears[0].year;
+                
+                let data = [];
+
+                for(let i = minYear; i <= maxYear; i++) {
+
+                  let amount = await model.find({year: i, isDeleted: {$ne: true}}).count();
+                  data.push({
+                    year: i,
+                    amount
+                  })
+                }
+
+                return h.response(data);
+                
+              } catch(err) {
+                if (!err.isBoom) {
+                  Log.error(err)
+                  throw Boom.badImplementation(err)
+                } else {
+                  throw err
+                }
+              }
+            }
+
+            server.route({
+              method: 'GET',
+              path: '/year_data/',
+              config: {
+                handler: handler,
+                auth: false,
+                description: 'get distribution of years',
+                tags: ['api'],
+                validate: {
+                },
+                plugins: {
+                  'hapi-swagger': {
+                    responseMessages: [
+                      {code: 200, message: 'Success'},
+                      {code: 400, message: 'Bad Request'},
+                      {code: 404, message: 'Not Found'},
+                      {code: 500, message: 'Internal Server Error'}
+                    ]
+                  }
+                }
+              }
+            })
+          },
+
+
+
           /* get all entries sorted by user_id endpoint
 
 

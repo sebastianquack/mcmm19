@@ -23,7 +23,6 @@ class BaseContainer extends Component {
   componentDidMount() {
     let hash = window.location.hash;
     let mcmmId = localStorage.getItem('mcmmId');  
-    console.log(mcmmId);
     if(hash) {
       mcmmId = hash.substr(1);
       this.setState({
