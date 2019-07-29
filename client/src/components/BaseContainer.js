@@ -90,7 +90,7 @@ class BaseContainer extends Component {
 export default BaseContainer;
 
 const MenuButton = styled.img`
-  position: absolute;
+  position: fixed;
   z-index: 100;
   width: 30px;
   height: 30px;
@@ -105,7 +105,7 @@ const MainContent = styled.div`
 `
 
 const AddButton = styled.div`
-  position: absolute;
+  position: fixed;
   z-index: 100;
   right: 20px;
   bottom: 20px;

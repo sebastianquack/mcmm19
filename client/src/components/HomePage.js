@@ -32,10 +32,10 @@ class HomePage extends Component {
     return (
       <div>
         <h1>home page</h1>
-        <div style={{width: 500, float: "left"}}>
+        <div style={{width: "100%", float: "left"}}>
           <MapPage entries={this.state.data}/>
         </div>
-        <div style={{width: 500, float: "left", marginLeft: 20}}>
+        <div style={{width: "100%", float: "left"}}>
           <SimpleGraph/>
         </div>
       </div>

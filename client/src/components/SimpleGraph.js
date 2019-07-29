@@ -43,6 +43,7 @@ class SimpleGraph extends Component {
 
     // D3 Code to create the chart
     // using this._rootNode as container
+    width = this._rootNode.current.offsetWidth;
     renderGraph(this._rootNode.current);
   }
 
