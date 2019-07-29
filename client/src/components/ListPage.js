@@ -16,7 +16,6 @@ class ListPage extends Component {
 
     const emoji = ["🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🦝"];
     this.user_emoji = emoji[Math.floor(Math.random() * emoji.length)];
-
   }
 
   async componentDidMount() {
@@ -24,7 +23,7 @@ class ListPage extends Component {
 
     axios.get(apiUrl + "/entry_by_user/" + this.props.mcmmId + "/")
     .then((response)=> {
-      this.setState({entries: response.data.docs})    
+      this.setState({ entries: response.data.docs})    
     })
     .catch((e)=> {
       console.log(e);
@@ -45,7 +44,7 @@ class ListPage extends Component {
         <p>This is your secret edit link: <a href={"#"+this.props.mcmmId}>{"#"+this.props.mcmmId}</a></p>
         <p>Bookmark it to manage your entries later or from other devices. If you lose it, you might lose access to your entries.</p>
       
-        <MapPage entries={this.state.entries} user_emoji={this.user_emoji}/>
+        <MapPage entries={[{emoji: this.user_emoji, entries: this.state.entries}]}/>
       </div>
     );
   }

@@ -56,7 +56,8 @@ module.exports = function (mongoose) {
 
       create: {
         pre: async function (payload, request, Log) {
-          payload = await addCityLocation(payload);
+          if(!payload.cityLocation)
+            payload = await addCityLocation(payload);
           return payload;
         }
       },
@@ -70,7 +71,12 @@ module.exports = function (mongoose) {
 
       extraEndpoints: [
           
-          // get data for graph
+          /* get data for graph
+
+
+
+          */
+
           function (server, model, options, logger) {
             const Log = logger.bind("Get graph data")
             let Boom = require('boom')
@@ -86,7 +92,7 @@ module.exports = function (mongoose) {
                 
                 // assemble nodes
                 
-                /*let musicians = await model.find({isDeleted: {$ne: true}}).distinct('musician');
+                let musicians = await model.find({isDeleted: {$ne: true}}).distinct('musician');
                 musicians.forEach((musician) => {
                   nodes.push({
                     name: musician,
@@ -96,6 +102,8 @@ module.exports = function (mongoose) {
                     weight: 1
                   });
                 })
+
+                /*
 
                 let cities = await model.find({isDeleted: {$ne: true}}).distinct('city');
                 cities.forEach((city) => {
@@ -149,11 +157,10 @@ module.exports = function (mongoose) {
                   })
                 })
 
-                /*
+                */
                 // music - music & city - city links 
 
                 // go over all individual users
-                let user_ids = await model.find({isDeleted: {$ne: true}}).distinct('user_id');
                 for(let i = 0; i < user_ids.length; i++) {
                   
                   // go over entries by this user
@@ -162,7 +169,7 @@ module.exports = function (mongoose) {
                     
                     // look at this entry's city and musician
                     let sourceIndex = musicians.indexOf(sourceEntry.musician);
-                    let sourceIndex2 = cities.indexOf(sourceEntry.city);
+                    //let sourceIndex2 = cities.indexOf(sourceEntry.city);
                     
                     // look at all this users other entries
                     user_entries.forEach((targetEntry) => {
@@ -176,7 +183,7 @@ module.exports = function (mongoose) {
                           value: 1
                         });   
                       }
-                      // add links to all cities
+                      /*// add links to all cities
                       let targetIndex2 = cities.indexOf(targetEntry.city);
                       if(targetIndex2 > -1 && targetIndex2 != sourceIndex2) {
                         links.push({
@@ -184,13 +191,13 @@ module.exports = function (mongoose) {
                           target: musicians.length + targetIndex2,
                           value: 1
                         });   
-                      }
+                      }*/
                     });
                   });
-                }*/
+                }
 
                 // try something simple - a node for each entry and links betwwen them
-                let user_index = 0;
+                /*let user_index = 0;
                 for(let i = 0; i < user_ids.length; i++) {
                   let user_id = user_ids[i];  
                   let user_emoji = emoji[Math.floor(Math.random() * emoji.length)];
@@ -220,7 +227,7 @@ module.exports = function (mongoose) {
                   }) 
 
                   user_index += user_entries.length               
-                }
+                }*/
 
                 console.log(nodes, links);
 
@@ -308,9 +315,87 @@ module.exports = function (mongoose) {
             })
           },
 
-          // get entries by user_id endpoint
+          /* get all entries sorted by user_id endpoint
+
+
+
+          */
+
           function (server, model, options, logger) {
-            const Log = logger.bind("Get entries by user")
+            const Log = logger.bind("Get all entries for all users")
+            let Boom = require('boom')
+
+            let handler = async function (request, h) {
+              try {
+                
+                const emoji = ["🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🦝"];
+                let user_ids = await model.find({isDeleted: {$ne: true}}).distinct('user_id');
+
+                let result = [];
+
+                for(let i = 0; i < user_ids.length; i++) {
+                  
+                  let entries = await model.find({
+                    user_id: user_ids[i], 
+                    isDeleted: {$ne: true}
+                  }).sort({year: 1});
+
+                  result.push({
+                    user_id: user_ids[i],
+                    emoji: emoji[Math.floor(Math.random() * emoji.length)],
+                    entries  
+                  })
+                    
+                }
+
+                if (result) {
+                  return h.response(result);
+                }
+                else {
+                  throw Boom.notFound("nothing found")
+                }
+              } catch(err) {
+                if (!err.isBoom) {
+                  Log.error(err)
+                  throw Boom.badImplementation(err)
+                } else {
+                  throw err
+                }
+              }
+            }
+
+            server.route({
+              method: 'GET',
+              path: '/entries_by_users/',
+              config: {
+                handler: handler,
+                auth: false,
+                description: 'Get all entries for all users',
+                tags: ['api'],
+                validate: {
+                },
+                plugins: {
+                  'hapi-swagger': {
+                    responseMessages: [
+                      {code: 200, message: 'Success'},
+                      {code: 400, message: 'Bad Request'},
+                      {code: 404, message: 'Not Found'},
+                      {code: 500, message: 'Internal Server Error'}
+                    ]
+                  }
+                }
+              }
+            })
+          },
+
+
+          /* get entries by user_id endpoint
+
+
+          */
+
+          function (server, model, options, logger) {
+            const Log = logger.bind("Get entries for a single user")
             let Boom = require('boom')
 
             let handler = async function (request, h) {
@@ -348,7 +433,7 @@ module.exports = function (mongoose) {
               config: {
                 handler: handler,
                 auth: false,
-                description: 'Retreive entries by user_id',
+                description: 'Get entries for a single user',
                 tags: ['api'],
                 validate: {
                   params: {

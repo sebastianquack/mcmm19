@@ -7,8 +7,8 @@ import * as d3 from 'd3'
 
 /* build the network */
 
-var width = window.innerWidth || 0,
-      height = window.innerHeight || 0;
+var width = 500,
+    height = 400;
 
 var zoom = d3.behavior.zoom().scaleExtent([-5, 12]).on("zoom", zoomed);
 
@@ -79,7 +79,7 @@ function renderGraph(element) {
   loadData(()=>{
     force.nodes(nodes).links(links);
     svg = d3.select(element).append("svg")
-      .attr("width", width)
+      .attr("width", "100%")
       .attr("height", height)
               .append("g");
     var l = svg.selectAll(".link")

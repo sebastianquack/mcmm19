@@ -10,6 +10,9 @@ class MapPage extends Component {
   constructor(props) {
     super(props);
     this.mapContainerRef = React.createRef();
+    this.markers = [];
+    this.lines = [];
+    this.infoWindows = [];
   } 
 
   componentDidMount() {
@@ -24,43 +27,60 @@ class MapPage extends Component {
   } 
 
   componentDidUpdate(prevPros) {
-    if(!this.markers && this.props.entries.length) {
+    if(!this.markers.length && this.props.entries) {
       const icon = {
         url: "/images/blank.png", // url
-        scaledSize: {height: 0, width: 0}, // scaled size
+        scaledSize: {height: 30, width: 30}, // scaled size
         origin: {x:0, y:0}, // origin
         anchor: {x:12.5, y:12.5}, // anchor
         labelOrigin: new google.maps.Point(12.5, 12.5)
       };
-
-      this.markers = this.props.entries.map((e, index)=>
-        new google.maps.Marker({
-          position: e.cityLocation,
-          icon: icon,
-          label: {
-            color: "#fff",
-            fontSize: "14px",
-            text: this.props.user_emoji,
-          },
-          map: this.map,
-        })
-      );
-      
       var latlngbounds = new window.google.maps.LatLngBounds();
-      this.props.entries.forEach(e=>{latlngbounds.extend(e.cityLocation)});
-      this.map.fitBounds(latlngbounds);
-      
-      const lines = this.props.entries.slice(0, -1).map((e, index)=>
-        new google.maps.Polyline({
-          path: [this.props.entries[index].cityLocation, this.props.entries[index+1].cityLocation],
-          //geodesic: true,
-          strokeColor: '#aaa',
-          strokeOpacity: 1.0,
-          strokeWeight: 1
-        })
-      );
 
-      lines.forEach(l=>l.setMap(this.map));
+      this.props.entries.forEach(user=>{      
+
+        // add markers for user
+        user.entries.forEach((e)=>{
+          let marker = new google.maps.Marker({
+              position: e.cityLocation,
+              icon: icon,
+              label: {
+                color: "#fff",
+                fontSize: "14px",
+                text: user.emoji,
+              },
+              map: this.map,
+          })
+          
+          let infoWindow = new google.maps.InfoWindow({
+            content: e.city + " " + e.musician + " " + e.year
+          });
+
+          marker.addListener('click', function() {
+            infoWindow.open(this.map, marker);
+          });
+
+          this.markers.push(marker)
+          this.infoWindows.push(infoWindow);
+          latlngbounds.extend(e.cityLocation);
+        })
+        
+        // add lines for user
+        user.entries.slice(0, -1).forEach((e, index)=>
+          this.lines.push(
+            new google.maps.Polyline({
+              path: [user.entries[index].cityLocation, user.entries[index+1].cityLocation],
+              //geodesic: true,
+              strokeColor: '#aaa',
+              strokeOpacity: 1.0,
+              strokeWeight: 1
+            })
+          )
+        );
+
+      });
+      this.lines.forEach(l=>l.setMap(this.map));
+      this.map.fitBounds(latlngbounds);
     }
   }
 
@@ -76,7 +96,7 @@ export default MapPage;
 const MapContainer = styled.div`
   display: flex;
   width: 100%; 
-  height: 300px;
+  height: 400px;
   box-sizing: border-box;
   flex-direction: column;
   visibility: ${props => props.visible != false ? "visible" : "hidden"}
