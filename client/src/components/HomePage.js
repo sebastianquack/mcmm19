@@ -7,6 +7,7 @@ import styled from 'styled-components'
 
 import LineGraph from './LineGraph.js';
 import MapPage from './MapPage.js';
+import SimpleGraph from './SimpleGraph.js';
 
 class HomePage extends Component {
   constructor(props) {
@@ -36,6 +37,9 @@ class HomePage extends Component {
         </div>
         <div style={{width: "100%", marginTop: 20, marginBottom: 50}}>
           <LineGraph/>
+        </div>
+        <div style={{width: "100%", marginTop: 20, marginBottom: 50}}>
+          <SimpleGraph/>
         </div>
       </div>
     );
