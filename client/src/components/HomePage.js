@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import ReactResizeDetector from 'react-resize-detector';
 import styled from 'styled-components'
 
-import axios from 'axios';
-import { apiUrl } from '../helpers'
-
 import LineGraph from './LineGraph.js';
 import MapComponent from './MapComponent.js';
 import TopMusiciansList from './TopMusiciansList.js';
@@ -13,18 +10,18 @@ class HomePage extends Component {
   constructor(props) {
     super(props);
       this.state = {
-        data: []
+        musicianFilter: null,
+        userFiler: []
     }
+
+    this.setMusicianFilter = this.setMusicianFilter.bind(this);
   }
 
-  async componentDidMount() {
-    axios.get(apiUrl + "/entries_by_users/")
-    .then((response)=> {
-      this.setState({ data: response.data})    
+  setMusicianFilter(musician) {
+    this.setState({
+      musicianFilter: musician,
+      userFilter: []
     })
-    .catch((e)=> {
-      console.log(e);
-    });
   }
 
   onResize = (width, height) => {
@@ -39,10 +36,10 @@ class HomePage extends Component {
     return (
       <Container>
         
-        <MapComponent entries={this.state.data}/>
+        <MapComponent musicianFilter={this.state.musicianFilter}/>
         
         { this.state.showTopMusiciansList &&
-          <TopMusiciansList/>
+          <TopMusiciansList setMusicianFilter={this.setMusicianFilter} musicianFilter={this.state.musicianFilter}/>
         }
 
         { this.state.showLineGraph &&

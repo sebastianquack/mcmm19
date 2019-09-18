@@ -240,7 +240,7 @@ module.exports = function (mongoose) {
             let handler = async function (request, h) {
               try {
 
-                console.log("userIds to filter", request.query.userIds);
+                //console.log("userIds to filter", request.query.userIds);
 
                 let data = [];
                 let musicians = [];
@@ -331,10 +331,10 @@ module.exports = function (mongoose) {
           },
 
 
-          /* get all entries sorted by user_id endpoint
-
-
-
+          /* get entries for map
+              - group by city
+              - filter by musician
+              - filter by user_ids
           */
 
           function (server, model, options, logger) {
@@ -344,32 +344,43 @@ module.exports = function (mongoose) {
             let handler = async function (request, h) {
               try {
                 
-                const emoji = ["🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🦝"];
-                let user_ids = await model.find({isDeleted: {$ne: true}}).distinct('user_id');
+                let result = {};
+                let users = [];
 
-                let result = [];
+                if(request.query.musician) {
+                  users = await model.find({
+                    musician: request.query.musician,
+                    isDeleted: {$ne: true},
+                  }).distinct('user_id');
+                } else {
+                  users = await model.find({
+                    isDeleted: {$ne: true},
+                  }).distinct('user_id');
+                }
 
-                for(let i = 0; i < user_ids.length; i++) {
-                  
+                for(let i = 0; i < users.length; i++) {
+                  let u = users[i];
+                  console.log(u);
                   let entries = await model.find({
-                    user_id: user_ids[i], 
-                    isDeleted: {$ne: true}
-                  }).sort({year: 1});
+                    user_id: u,
+                    isDeleted: {$ne: true},
+                  });
 
-                  result.push({
-                    user_id: user_ids[i],
-                    emoji: emoji[Math.floor(Math.random() * emoji.length)],
-                    entries  
-                  })
-                    
+                  console.log(entries);
+
+                  if(entries.length) {
+
+                    entries.forEach(e=>{
+                      if(!result[e.city]) {
+                        result[e.city] = [];
+                      }
+                      result[e.city].push(e);
+                    })
+                  }
                 }
 
-                if (result) {
-                  return h.response(result);
-                }
-                else {
-                  throw Boom.notFound("nothing found")
-                }
+                return h.response(result);
+                
               } catch(err) {
                 if (!err.isBoom) {
                   Log.error(err)
@@ -382,13 +393,17 @@ module.exports = function (mongoose) {
 
             server.route({
               method: 'GET',
-              path: '/entries_by_users/',
+              path: '/map_entries/',
               config: {
                 handler: handler,
                 auth: false,
-                description: 'Get all entries for all users',
+                description: 'Get entries for map',
                 tags: ['api'],
                 validate: {
+                  query: {
+                    userIds: Joi.array(),
+                    musician: Joi.string()
+                  }
                 },
                 plugins: {
                   'hapi-swagger': {
