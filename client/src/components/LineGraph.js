@@ -9,10 +9,12 @@ export default class LineGraph extends PureComponent {
     this.state = {
       data: []
     }
+
+    this.fetchData = this.fetchData.bind(this);
   }
 
-  componentDidMount() {
-    axios.get(apiUrl + "/year_data/")
+  fetchData() {
+    axios.get(apiUrl + "/year_data/" + (this.props.musicianFilter ? "?musician=" + this.props.musicianFilter : ""))
     .then((response)=> {
       console.log("yearly data loaded")
       this.setState({
@@ -22,6 +24,16 @@ export default class LineGraph extends PureComponent {
     .catch((e)=> {
       console.log(e);
     });
+  }
+
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  componentDidUpdate(prevProps) {
+    if(this.props.musicianFilter !== prevProps.musicianFilter) {
+      this.fetchData();
+    }
   }
 
   renderYear(year, amount) {

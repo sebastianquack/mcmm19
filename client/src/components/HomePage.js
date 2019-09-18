@@ -43,7 +43,7 @@ class HomePage extends Component {
         }
 
         { this.state.showLineGraph &&
-          <LineGraph/>
+          <LineGraph musicianFilter={this.state.musicianFilter}/>
         }
         
         <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} />

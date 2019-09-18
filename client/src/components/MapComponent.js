@@ -26,7 +26,16 @@ class MapComponent extends Component {
   } 
 
   fetchData() {
-    axios.get(apiUrl + "/map_entries/" + (this.props.musicianFilter ? "?musician=" + this.props.musicianFilter : ""))
+    let params = {}
+
+    if(this.props.musicianFilter) {
+      params.musician = this.props.musicianFilter;
+    }
+    if(this.props.userFilter) {
+      params.userIds = JSON.stringify(this.props.userFilter);
+    }
+
+    axios.get(apiUrl + "/map_entries/", {params})
       .then((response)=> {
         console.log(response);
         this.setState({ entries: response.data}, this.drawMap);
