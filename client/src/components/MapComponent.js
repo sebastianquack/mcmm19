@@ -45,6 +45,7 @@ class MapComponent extends Component {
       streetViewControl: false, 
       fullscreenControl: false, 
       mapTypeControl: false,
+      zoomControl: false,
       styles: mapStyles // change default map styles
     });
 
