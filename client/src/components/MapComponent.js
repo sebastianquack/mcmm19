@@ -5,7 +5,7 @@ import styled from 'styled-components'
 const mapStyles = require('./GoogleMapStyles.json')
 const google = window.google;
 
-class MapPage extends Component {
+class MapComponent extends Component {
 
   constructor(props) {
     super(props);
@@ -29,7 +29,7 @@ class MapPage extends Component {
   componentDidUpdate(prevPros) {
     if(!this.markers.length && this.props.entries) {
       const icon = {
-        url: "/images/blank.png", // url
+        url: "/images/dot.png", // url
         scaledSize: {height: 30, width: 30}, // scaled size
         origin: {x:0, y:0}, // origin
         anchor: {x:12.5, y:12.5}, // anchor
@@ -44,11 +44,11 @@ class MapPage extends Component {
           let marker = new google.maps.Marker({
               position: e.cityLocation,
               icon: icon,
-              label: {
+              /*label: {
                 color: "#fff",
                 fontSize: "14px",
-                text: user.emoji,
-              },
+                text: "entry text on map if needed",
+              },*/
               map: this.map,
           })
           
@@ -65,6 +65,7 @@ class MapPage extends Component {
           latlngbounds.extend(e.cityLocation);
         })
         
+        /*
         // add lines for user
         user.entries.slice(0, -1).forEach((e, index)=>
           this.lines.push(
@@ -77,6 +78,7 @@ class MapPage extends Component {
             })
           )
         );
+        */
 
       });
       this.lines.forEach(l=>l.setMap(this.map));
@@ -91,7 +93,7 @@ class MapPage extends Component {
   }
 }
 
-export default MapPage;
+export default MapComponent;
 
 const MapContainer = styled.div`
   display: flex;

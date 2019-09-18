@@ -228,6 +228,108 @@ module.exports = function (mongoose) {
           },
 
 
+          /* get top musicians
+
+
+          */
+
+          function (server, model, options, logger) {
+            const Log = logger.bind("get top musicians")
+            let Boom = require('boom')
+
+            let handler = async function (request, h) {
+              try {
+
+                console.log("userIds to filter", request.query.userIds);
+
+                let data = [];
+                let musicians = [];
+                let totalEntriesCount = await model.find({isDeleted: {$ne: true}}).count();
+
+                if(!request.query.musician) {
+
+                  if(!request.query.userIds) {
+                    musicians = await model.find({isDeleted: {$ne: true}}).distinct('musician');
+                  } else {
+                    musicians = await model.find({
+                      isDeleted: {$ne: true},
+                      user_id: {$in: request.query.userIds}
+                    }).distinct('musician');
+                  }
+
+                } else {
+
+                  let user_ids = await model.find({
+                      isDeleted: {$ne: true},
+                      musician: request.query.musician
+                    }).distinct('user_id');
+
+                  musicians = await model.find({
+                      isDeleted: {$ne: true},
+                      user_id: {$in: user_ids}
+                  }).distinct('musician'); 
+
+                }
+
+                for(let i = 0; i < musicians.length; i++) {
+                  let musician = musicians[i];
+                  let count = await model.find({musician: musician}).count();
+                  data.push({
+                    name: musician,
+                    id: musician,
+                    count: count,
+                    percent: Math.floor((count / totalEntriesCount) * 100)
+                  });
+                }
+                data.sort((a,b) => (a.count < b.count) ? 1 : ((b.count > a.count) ? -1 : 0)); 
+
+                let limit = request.params.limit ? request.params.limit : 10; 
+
+                data = data.slice(0, limit);
+
+                return h.response(data);
+                
+              } catch(err) {
+                if (!err.isBoom) {
+                  Log.error(err)
+                  throw Boom.badImplementation(err)
+                } else {
+                  throw err
+                }
+              }
+            }
+
+            server.route({
+              method: 'GET',
+              path: '/top_musicians/{limit}/',
+              config: {
+                handler: handler,
+                auth: false,
+                description: 'get top musicians',
+                tags: ['api'],
+                validate: {
+                  params: {
+                    limit: Joi.number(),
+                  },
+                  query: {
+                    userIds: Joi.array(),
+                    musician: Joi.string()
+                  }
+                },
+                plugins: {
+                  'hapi-swagger': {
+                    responseMessages: [
+                      {code: 200, message: 'Success'},
+                      {code: 400, message: 'Bad Request'},
+                      {code: 404, message: 'Not Found'},
+                      {code: 500, message: 'Internal Server Error'}
+                    ]
+                  }
+                }
+              }
+            })
+          },
+
 
           /* get all entries sorted by user_id endpoint
 
