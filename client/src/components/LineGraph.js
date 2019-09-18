@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import styled from 'styled-components';
 
 import { apiUrl } from '../helpers'
 import axios from 'axios';
@@ -26,13 +27,13 @@ export default class LineGraph extends PureComponent {
 
   renderYear(year, amount) {
     return <li key={year}>
-      <span class="year_top">
+      <span className="year_top">
         { amount > 0 ? 
           <img style={{transform: "scale("+amount+")"}} alt={year} src="/images/marker.svg" /> 
         : null }
       </span>
-      <span class="year_middle"></span>
-      <span class="year_bottom">
+      <span className="year_middle"></span>
+      <span className="year_bottom">
         <span>
           { amount > 0 ? year : null }
         </span>  
@@ -43,8 +44,6 @@ export default class LineGraph extends PureComponent {
   render() {
     let data = this.state.data
     if (!data || data.length === 0) return null
-
-    console.log(data)
 
     // prepend some years at the beginning
     const prependAmount = 4
@@ -60,15 +59,75 @@ export default class LineGraph extends PureComponent {
       amount:0
     })))
 
-    console.log(data)
-
     const startYear = data[0].year
-    const endYear = data[data.length-1].year
         
     const listEntries = data.map( d => this.renderYear(d.year, d.amount) )
 
-    return <ol className="LineGraph" start={startYear}>
+    return <Ol className="LineGraph" start={startYear}>
         {listEntries}
-    </ol>;
+    </Ol>;
   }
 }
+
+const Ol = styled.ol`
+  position: fixed;
+  bottom:0;
+  left:0;
+  right: 0;
+
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  width: 100%;
+
+  li {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 6em;
+  }
+
+  li .year_top {
+    height: 3vh;
+    /* background: red; */
+  }
+
+  li .year_top img {
+    width: auto;
+    height: 1vh;
+    /* background: yellow; */
+  }
+
+  li .year_middle {
+    height: 3vh;
+  }
+
+  li .year_middle:before {
+    content: "";
+    border: solid 1px black;
+    border-width: 0 0 0 1px;
+    position: relative;
+    left: calc(50% - 1px);
+  }
+
+  li .year_bottom {
+    height: 3vh;
+    /* background: green; */
+  }
+
+  li .year_bottom span {
+    width: calc(1em + 20%);
+    transform: rotate(-90deg) translateX(-100%);
+    overflow: visible;
+    /* background: red; */
+  }
+
+  li > * {
+    position: relative;
+  }
+
+  li > * > * {
+    position: absolute;
+  }
+`

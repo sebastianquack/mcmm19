@@ -96,10 +96,7 @@ class MapComponent extends Component {
 export default MapComponent;
 
 const MapContainer = styled.div`
-  display: flex;
   width: 100%; 
-  height: 400px;
-  box-sizing: border-box;
-  flex-direction: column;
+  height: 100%;
   visibility: ${props => props.visible != false ? "visible" : "hidden"}
 `

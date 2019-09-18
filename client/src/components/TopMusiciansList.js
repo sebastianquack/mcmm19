@@ -29,14 +29,33 @@ class TopMusiciansList extends Component {
 
     const entries = this.state.musicians.map((e, i)=>
       <li key={i}>
-        {e.name} {e.count} {e.percent}%
-      </li>);
-    return (
-      <div>
+        <span>{e.percent}%</span>
+        &nbsp;
+        <span>{e.name}&nbsp;({e.count})</span>
+      </li>);    return (
+      <Container>
         <ul>{entries}</ul>
-      </div>
+      </Container>
     );
   }
 }
 
 export default TopMusiciansList;
+
+const Container = styled.div`
+  position: fixed;
+  right: 0;
+  top: 0;
+
+  ul {
+    list-style-type: none;
+  } ;
+  li {
+    display: flex;
+    span {
+    }    
+    span:first-child {
+      width: 2em;
+    }
+  }
+`
