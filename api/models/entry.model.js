@@ -239,10 +239,37 @@ module.exports = function (mongoose) {
 
             let handler = async function (request, h) {
               try {
-                
+
+                console.log("userIds to filter", request.query.userIds);
+
                 let data = [];
-                let musicians = await model.find({isDeleted: {$ne: true}}).distinct('musician');
-                let totalEntriesCount = await await model.find().count();
+                let musicians = [];
+                let totalEntriesCount = await model.find({isDeleted: {$ne: true}).count();
+
+                if(!request.query.musician) {
+
+                  if(!request.query.userIds) {
+                    musicians = await model.find({isDeleted: {$ne: true}}).distinct('musician');
+                  } else {
+                    musicians = await model.find({
+                      isDeleted: {$ne: true},
+                      user_id: {$in: request.query.userIds}
+                    }).distinct('musician');
+                  }
+
+                } else {
+
+                  let user_ids = await model.find({
+                      isDeleted: {$ne: true},
+                      musician: request.query.musician
+                    }).distinct('user_id');
+
+                  musicians = await model.find({
+                      isDeleted: {$ne: true},
+                      user_id: {$in: user_ids}
+                  }).distinct('musician'); 
+
+                }
 
                 for(let i = 0; i < musicians.length; i++) {
                   let musician = musicians[i];
@@ -282,8 +309,12 @@ module.exports = function (mongoose) {
                 tags: ['api'],
                 validate: {
                   params: {
-                    limit: Joi.number()
+                    limit: Joi.number(),
                   },
+                  query: {
+                    userIds: Joi.array(),
+                    musician: Joi.string()
+                  }
                 },
                 plugins: {
                   'hapi-swagger': {
