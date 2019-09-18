@@ -38,9 +38,6 @@ class HomePage extends Component {
         <div style={{width: "100%", marginTop: 20, marginBottom: 50}}>
           <LineGraph/>
         </div>
-        <div style={{width: "100%", marginTop: 20, marginBottom: 50}}>
-          <SimpleGraph/>
-        </div>
       </div>
     );
   }
