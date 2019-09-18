@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import "css-reset-and-normalize";
+import { createGlobalStyle } from "styled-components";
 
 import Menu from './Menu.js';
 import ListPage from './ListPage.js';
@@ -77,6 +79,7 @@ class BaseContainer extends Component {
     return (
       this.state.menuOpen ? <Menu close={this.toggleMenu} navigate={this.navigate}/> : 
       <MainContent>
+        <GlobalStyles />
         <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>
         {mainContent}
         {(this.state.currentPage == "home" || this.state.currentPage == "list") && <AddButton onClick={()=>this.navigate("edit")}>add</AddButton>}
@@ -99,8 +102,9 @@ const MenuButton = styled.img`
 `
 
 const MainContent = styled.div`
-  margin-top: 20px;
-  padding: 20px;
+  height: 100%;
+  width: 100%;
+  background: red;
 `
 
 const AddButton = styled.div`
@@ -121,4 +125,26 @@ const ExitButton = styled.img`
   width: 30px;
   height: 30px;
   :hover {cursor: pointer};
+`
+const GlobalStyles = createGlobalStyle`
+
+  @font-face {
+    font-family: NeutraText;
+    src:  url('/fonts/NeutraText-Bold.otf');
+    /*[unicode-range: <urange>#;]?
+    [font-variant: <font-variant>;]?
+    [font-feature-settings: normal|<feature-tag-value>#;]?
+    [font-stretch: <font-stretch>;]?
+    [font-weight: <weight>];
+    [font-style: <style>];*/
+  }
+
+  html, body, #root {
+    height: 100%;
+    width: 100%;
+  }
+
+  body {
+    font-family: NeutraText, sans-serif;
+  }
 `

@@ -39,17 +39,44 @@ class TopMusiciansList extends Component {
 
   render() {
 
-    const entries = this.state.musicians.map((e, i)=>
-      <li key={i}>
-        <span onClick={()=>this.props.setMusicianFilter(e.name)}>{e.name} {e.count} {e.percent}%</span>
-      </li>);
+    const entries = this.state.musicians.map((e, i)=> 
+      <li key={i} onClick={ () => this.props.setMusicianFilter(e.name) }>
+        <span>{e.percent}%</span>
+        &nbsp;
+        <span>{e.name}&nbsp;({e.count})</span>
+      </li>)
+
     return (
-      <div>
-        {this.props.musicianFilter && <p>filter: {this.props.musicianFilter} <span onClick={()=>this.props.setMusicianFilter(null)}>clear</span></p>}
+      <Container>
+        { this.props.musicianFilter && 
+          <p>filter: {this.props.musicianFilter} 
+            <span onClick={()=>this.props.setMusicianFilter(null)}>
+              clear
+            </span>
+          </p>
+        }
         <ul>{entries}</ul>
-      </div>
+      </Container>
     );
   }
 }
 
 export default TopMusiciansList;
+
+const Container = styled.div`
+  position: fixed;
+  right: 0;
+  top: 0;
+
+  ul {
+    list-style-type: none;
+  } ;
+  li {
+    display: flex;
+    span {
+    }    
+    span:first-child {
+      width: 2em;
+    }
+  }
+`
