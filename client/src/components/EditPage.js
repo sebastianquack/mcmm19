@@ -198,6 +198,8 @@ const autocompleteInputStyle = {};
 
 const Form = styled.form`
   input, textarea {
+    display: block;
+    border:none;
     width: 100%;
     background-color: black;
     color: white;
