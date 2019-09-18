@@ -93,7 +93,7 @@ class EditPage extends Component {
   handleInputChange = (event)=> {
     const target = event.target;
     const name = target.name;
-    const value = name != "year" || (name == "year" && !isNaN(target.value)) ? target.value : this.state.year;
+    const value = name !== "year" || (name === "year" && !isNaN(target.value)) ? target.value : this.state.year;
 
     this.setState({
       [name]: value,
@@ -101,11 +101,19 @@ class EditPage extends Component {
     });
   }
 
+  fixYear = year => {
+    const yearMax = new Date().getFullYear()
+    const yearMin = yearMax - 80
+    if ( year < yearMin) year = yearMin
+    if ( year > yearMax) year = yearMax
+    return year
+  }
+
   render() {
     return (
-      <div>
+      <Container>
         <h1>{this.state._id ? "update entry" : "new entry"}</h1>
-        <form>
+        <Form>
           <Label>musician/composer/band</Label> 
           
           <ReactAutocomplete
@@ -151,20 +159,33 @@ class EditPage extends Component {
 
           <br/>
           <Label>year</Label>
-          <Input autoComplete="off" type="text" name="year" value={this.state.year} onChange={this.handleInputChange}/>
+          <input 
+            autoComplete="off" 
+            size="4" 
+            maxLength="4" 
+            type="text" 
+            name="year" 
+            value={this.state.year} 
+            onChange={this.handleInputChange} 
+            onBlur={() => this.setState({year:this.fixYear(this.state.year)})} 
+          />
           <br/>
           <Label>note</Label>
-          <Textarea name="note" value={this.state.note} onChange={this.handleInputChange}/>
+          <textarea name="note" value={this.state.note} onChange={this.handleInputChange}/>
           <br/>
           {this.state.changed && <Button onClick={this.handleSubmit}>save</Button>}
           {this.state._id && <Button onClick={this.handleDelete}>delete entry</Button>}
-        </form>
-      </div>
+        </Form>
+      </Container>
     );
   }
 }
 
 export default EditPage;
+
+const Container = styled.div`
+  padding: 4rem 1rem 2rem 1rem;
+`
 
 const Label = styled.label`
   display: inline-block;
@@ -173,24 +194,32 @@ const Label = styled.label`
   margin-bottom: 5px;
 `
 
-const autocompleteInputStyle = {width: "100%", height: "2em", fontSize: "200%", boxSizing: "border-box"};
+const autocompleteInputStyle = {};
 
-const Input = styled.input`
-  font-size: 200%;
-  text-align: left;
-  width: 100%;
-  height: 2em;
-  box-sizing: border-box;
+const Form = styled.form`
+  input, textarea {
+    width: 100%;
+    background-color: black;
+    color: white;
+    outline: none;
+    box-sizing: border-box;
+    padding: 0.5rem;
+  }
+
+  input {
+    font-size: 200%;
+    text-align: left;
+    height: 2em;
+    &[name="year"] {
+      width: auto;
+    }
+  }
+
+  textarea {
+    height: 100px;
+    font-size: 150%;
+  }
 `
-
-const Textarea = styled.textarea`
-  width: 100%;
-  height: 100px;
-  padding: 10px;
-  font-size: 150%;
-  box-sizing: border-box;
-`
-
 const Button = styled.div`
   width: 100%;
   margin-top: 20px;

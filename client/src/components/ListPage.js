@@ -38,19 +38,23 @@ class ListPage extends Component {
         {this.user_emoji} {e.musician} {e.city} {e.year} <EditLink onClick={()=>{this.props.editEntry(e)}}>[edit]</EditLink>
       </ListItem>);
     return (
-      <div>
+      <Container>
         <h1>my entries</h1>
         <List>{entries}</List>
         <p>This is your secret edit link: <a href={"#"+this.props.mcmmId}>{"#"+this.props.mcmmId}</a></p>
         <p>Bookmark it to manage your entries later or from other devices. If you lose it, you might lose access to your entries.</p>
       
         <MapComponent entries={[{entries: this.state.entries}]}/>
-      </div>
+      </Container>
     );
   }
 }
 
 export default ListPage;
+
+const Container = styled.div`
+  padding: 4rem 1rem 2rem 1rem;
+`
 
 const EditLink = styled.span`
   color: orange;

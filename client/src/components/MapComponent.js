@@ -63,7 +63,7 @@ class MapComponent extends Component {
   drawMap() {
     
       const icon = {
-        url: "/images/dot.png", // url
+        url: "/images/marker.svg", // url
         scaledSize: {height: 30, width: 30}, // scaled size
         origin: {x:0, y:0}, // origin
         anchor: {x:12.5, y:12.5}, // anchor

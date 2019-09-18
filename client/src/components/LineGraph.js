@@ -63,7 +63,7 @@ export default class LineGraph extends PureComponent {
         
     const listEntries = data.map( d => this.renderYear(d.year, d.amount) )
 
-    return <Ol className="LineGraph" start={startYear}>
+    return <Ol start={startYear}>
         {listEntries}
     </Ol>;
   }
@@ -74,11 +74,10 @@ const Ol = styled.ol`
   bottom:0;
   left:0;
   right: 0;
+  padding: 1rem;
+  box-sizing: border-box;
 
   display: flex;
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
   width: 100%;
 
   li {

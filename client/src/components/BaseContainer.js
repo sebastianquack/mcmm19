@@ -77,14 +77,22 @@ class BaseContainer extends Component {
     let mainContent = pages[this.state.currentPage];
     
     return (
-      this.state.menuOpen ? <Menu close={this.toggleMenu} navigate={this.navigate}/> : 
-      <MainContent>
-        <GlobalStyles />
-        <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>
-        {mainContent}
-        {(this.state.currentPage == "home" || this.state.currentPage == "list") && <AddButton onClick={()=>this.navigate("edit")}>add</AddButton>}
-        {this.state.currentPage != "home" && <ExitButton src="/images/close.png" onClick={this.back}/>}
-      </MainContent>
+      [
+        <GlobalStyles key="globalstyles" />,
+        this.state.menuOpen ?
+        <Menu key="main" close={this.toggleMenu} navigate={this.navigate}/> 
+        : 
+          <MainContent key="main">
+            <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>
+            {mainContent}
+            {(this.state.currentPage === "home" || this.state.currentPage == "list") && 
+              <AddButton onClick={()=>this.navigate("edit")}>add</AddButton>
+            }
+            {this.state.currentPage !== "home" && 
+              <ExitButton src="/images/close.png" onClick={this.back}/>
+            }
+          </MainContent>
+      ]
     );
   }
 }
@@ -98,33 +106,32 @@ const MenuButton = styled.img`
   height: 30px;
   left: 10px;
   top: 10px;
-  :hover {cursor: pointer}; 
+  &:hover {cursor: pointer}; 
 `
 
 const MainContent = styled.div`
   height: 100%;
   width: 100%;
-  background: red;
 `
 
 const AddButton = styled.div`
   position: fixed;
   z-index: 100;
-  right: 20px;
-  bottom: 20px;
+  right: 1rem;
+  bottom: 1rem;
   border: 1px solid black;
   background-color: white;
   padding: 10px;
-  :hover {cursor: pointer}; 
+  &:hover {cursor: pointer}; 
 `
 
 const ExitButton = styled.img`
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 1rem;
+  right: 1rem;
   width: 30px;
   height: 30px;
-  :hover {cursor: pointer};
+  &:hover {cursor: pointer};
 `
 const GlobalStyles = createGlobalStyle`
 
