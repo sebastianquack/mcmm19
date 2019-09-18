@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 
-import axios from 'axios';
-import { apiUrl } from '../helpers'
-
 import styled from 'styled-components'
 
 import LineGraph from './LineGraph.js';
@@ -13,18 +10,18 @@ class HomePage extends Component {
   constructor(props) {
     super(props);
       this.state = {
-        data: []
+        musicianFilter: null,
+        userFiler: []
     }
+
+    this.setMusicianFilter = this.setMusicianFilter.bind(this);
   }
 
-  async componentDidMount() {
-    axios.get(apiUrl + "/entries_by_users/")
-    .then((response)=> {
-      this.setState({ data: response.data})    
+  setMusicianFilter(musician) {
+    this.setState({
+      musicianFilter: musician,
+      userFilter: []
     })
-    .catch((e)=> {
-      console.log(e);
-    });
   }
   
   render() {
@@ -32,11 +29,11 @@ class HomePage extends Component {
       <div>
         <h1>home page</h1>
         <div style={{width: "66%", float: "left"}}>
-          <MapComponent entries={this.state.data}/>
+          <MapComponent musicianFilter={this.state.musicianFilter}/>
         </div>
         
         <div style={{width: "30%", float: "left"}}>
-          <TopMusiciansList/>
+          <TopMusiciansList setMusicianFilter={this.setMusicianFilter} musicianFilter={this.state.musicianFilter}/>
         </div>
 
         <div style={{width: "100%", marginTop: 20, marginBottom: 50}}>

@@ -11,11 +11,17 @@ class TopMusiciansList extends Component {
     this.state = {
       musicians: []
     }
+
+    this.fetchData = this.fetchData.bind(this);
   }
 
-  async componentDidMount() {
+  componentDidMount() {
+    this.fetchData();
+  }
 
-    axios.get(apiUrl + "/top_musicians/10/")
+  fetchData() {
+    axios.get(apiUrl + "/top_musicians/10/" 
+      + (this.props.musicianFilter ? "?musician=" + this.props.musicianFilter : ""))
     .then((response)=> {
       console.log(response.data);
       this.setState({ musicians: response.data })    
@@ -23,16 +29,23 @@ class TopMusiciansList extends Component {
     .catch((e)=> {
       console.log(e);
     });
+  }  
+
+  componentDidUpdate(prevProps) {
+    if(this.props.musicianFilter !== prevProps.musicianFilter) {
+      this.fetchData();
+    }
   }
 
   render() {
 
     const entries = this.state.musicians.map((e, i)=>
       <li key={i}>
-        {e.name} {e.count} {e.percent}%
+        <span onClick={()=>this.props.setMusicianFilter(e.name)}>{e.name} {e.count} {e.percent}%</span>
       </li>);
     return (
       <div>
+        {this.props.musicianFilter && <p>filter: {this.props.musicianFilter} <span onClick={()=>this.props.setMusicianFilter(null)}>clear</span></p>}
         <ul>{entries}</ul>
       </div>
     );
