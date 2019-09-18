@@ -54,8 +54,10 @@ class MapComponent extends Component {
       streetViewControl: false, 
       fullscreenControl: false, 
       mapTypeControl: false,
+      zoomControl: false,
       styles: mapStyles // change default map styles
     });
+
   }
 
   componentDidUpdate(prevProps) {
@@ -72,7 +74,7 @@ class MapComponent extends Component {
   drawMap() {
     
       const icon = {
-        url: "/images/dot.png", // url
+        url: "/images/marker.svg", // url
         scaledSize: {height: 30, width: 30}, // scaled size
         origin: {x:0, y:0}, // origin
         anchor: {x:12.5, y:12.5}, // anchor
@@ -130,7 +132,10 @@ class MapComponent extends Component {
         */
 
       this.lines.forEach(l=>l.setMap(this.map));
+      
       this.map.fitBounds(latlngbounds);
+      var zoom = this.map.getZoom();
+      this.map.setZoom(zoom < 2 ? 2 : zoom); // minimum initial zoom is 2, so there are no visible borders
   
   }
 

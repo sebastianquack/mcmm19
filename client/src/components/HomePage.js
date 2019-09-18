@@ -45,7 +45,7 @@ class HomePage extends Component {
         
         <MapComponent userFilter={this.props.userFilter} musicianFilter={this.state.musicianFilter}/>
         
-        { this.props.wideView &&
+        { this.state.showTopMusiciansList &&
           <TopMusiciansList setMusicianFilter={this.setMusicianFilter} musicianFilter={this.state.musicianFilter}/>
         }
 

@@ -100,17 +100,24 @@ class BaseContainer extends Component {
     let mainContent = pages[this.state.currentPage];
     
     return (
-      this.state.menuOpen ? <Menu close={this.toggleMenu} reset={this.reset} navigate={this.navigate}/> : 
-      <MainContent>
-        <GlobalStyles />
-        {!(this.state.userFilter.length > 0) && <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>}
-        {mainContent}
-        {((this.state.currentPage == "home" && !(this.state.userFilter.length > 0)) || this.state.currentPage == "list") && 
-          <AddButton onClick={()=>this.navigate("edit")}>add</AddButton>
-        }
-        {this.state.currentPage != "home" &&
-          <ExitButton src="/images/close.png" onClick={this.back}/>}
-      </MainContent>
+      [
+        <GlobalStyles key="globalstyles" />,
+        this.state.menuOpen ?
+        <Menu key="main" close={this.toggleMenu} navigate={this.navigate}/> 
+        : 
+          <MainContent key="main">
+            {!(this.state.userFilter.length > 0) && <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>}
+            {mainContent}
+            {((this.state.currentPage === "home" && !(this.state.userFilter.length > 0)) || this.state.currentPage == "list") && 
+              <AddButton onClick={()=>this.navigate("edit")}>
+                +
+              </AddButton>
+            }
+            {this.state.currentPage !== "home" && 
+              <ExitButton src="/images/close.png" onClick={this.back}/>
+            }
+          </MainContent>
+      ]
     );
   }
 }
@@ -124,33 +131,42 @@ const MenuButton = styled.img`
   height: 30px;
   left: 10px;
   top: 10px;
-  :hover {cursor: pointer}; 
+  &:hover {cursor: pointer}; 
 `
 
 const MainContent = styled.div`
   height: 100%;
   width: 100%;
+<<<<<<< HEAD
   background: #fff;
+=======
+>>>>>>> 243f5202a1cc7f781d990eab874d668d0cf67764
 `
 
 const AddButton = styled.div`
   position: fixed;
   z-index: 100;
-  right: 20px;
-  bottom: 20px;
-  border: 1px solid black;
+  right: 1rem;
+  bottom: 2rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 2rem;
+  line-height: 1.1rem;
+  text-align: center;
+  border: 2px solid black;
+  border-radius: 50%;
   background-color: white;
   padding: 10px;
-  :hover {cursor: pointer}; 
+  &:hover {cursor: pointer}; 
 `
 
 const ExitButton = styled.img`
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 1rem;
+  right: 1rem;
   width: 30px;
   height: 30px;
-  :hover {cursor: pointer};
+  &:hover {cursor: pointer};
 `
 const GlobalStyles = createGlobalStyle`
 
