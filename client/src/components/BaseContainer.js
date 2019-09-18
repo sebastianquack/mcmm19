@@ -86,7 +86,9 @@ class BaseContainer extends Component {
             <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>
             {mainContent}
             {(this.state.currentPage === "home" || this.state.currentPage == "list") && 
-              <AddButton onClick={()=>this.navigate("edit")}>add</AddButton>
+              <AddButton onClick={()=>this.navigate("edit")}>
+                +
+              </AddButton>
             }
             {this.state.currentPage !== "home" && 
               <ExitButton src="/images/close.png" onClick={this.back}/>
@@ -118,8 +120,14 @@ const AddButton = styled.div`
   position: fixed;
   z-index: 100;
   right: 1rem;
-  bottom: 1rem;
-  border: 1px solid black;
+  bottom: 2rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 2rem;
+  line-height: 1.1rem;
+  text-align: center;
+  border: 2px solid black;
+  border-radius: 50%;
   background-color: white;
   padding: 10px;
   &:hover {cursor: pointer}; 
