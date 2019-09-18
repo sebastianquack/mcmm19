@@ -47,6 +47,7 @@ class MapComponent extends Component {
       mapTypeControl: false,
       styles: mapStyles // change default map styles
     });
+
   }
 
   componentDidUpdate(prevProps) {
@@ -121,7 +122,10 @@ class MapComponent extends Component {
         */
 
       this.lines.forEach(l=>l.setMap(this.map));
+      
       this.map.fitBounds(latlngbounds);
+      var zoom = this.map.getZoom();
+      this.map.setZoom(zoom < 2 ? 2 : zoom); // minimum initial zoom is 2, so there are no visible borders
   
   }
 
