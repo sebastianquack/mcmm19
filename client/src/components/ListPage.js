@@ -5,7 +5,7 @@ import { apiUrl } from '../helpers'
 
 import styled from 'styled-components'
 
-import MapPage from './MapPage.js';
+import MapComponent from './MapComponent.js';
 
 class ListPage extends Component {
   constructor(props) {
@@ -44,7 +44,7 @@ class ListPage extends Component {
         <p>This is your secret edit link: <a href={"#"+this.props.mcmmId}>{"#"+this.props.mcmmId}</a></p>
         <p>Bookmark it to manage your entries later or from other devices. If you lose it, you might lose access to your entries.</p>
       
-        <MapPage entries={[{emoji: this.user_emoji, entries: this.state.entries}]}/>
+        <MapComponent entries={[{entries: this.state.entries}]}/>
       </div>
     );
   }

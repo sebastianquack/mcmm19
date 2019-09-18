@@ -6,8 +6,8 @@ import { apiUrl } from '../helpers'
 import styled from 'styled-components'
 
 import LineGraph from './LineGraph.js';
-import MapPage from './MapPage.js';
-import SimpleGraph from './SimpleGraph.js';
+import MapComponent from './MapComponent.js';
+import TopMusiciansList from './TopMusiciansList.js';
 
 class HomePage extends Component {
   constructor(props) {
@@ -27,20 +27,23 @@ class HomePage extends Component {
     });
   }
   
-
   render() {
     return (
       <div>
         <h1>home page</h1>
-        <div style={{width: "100%"}}>
-          <MapPage entries={this.state.data}/>
+        <div style={{width: "66%", float: "left"}}>
+          <MapComponent entries={this.state.data}/>
         </div>
+        
+        <div style={{width: "30%", float: "left"}}>
+          <TopMusiciansList/>
+        </div>
+
         <div style={{width: "100%", marginTop: 20, marginBottom: 50}}>
           <LineGraph/>
         </div>
-        <div style={{width: "100%", marginTop: 20, marginBottom: 50}}>
-          <SimpleGraph/>
-        </div>
+
+        
       </div>
     );
   }
