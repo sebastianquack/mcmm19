@@ -1,95 +1,74 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import { apiUrl } from '../helpers'
 import axios from 'axios';
 
-import * as d3 from 'd3'
-
-var width = 500,
-    height = 100;
-
-var margin = {top: 30, right: 50, bottom: 50, left: 30};
-
-var svg;
-
-export default class LineGraph extends Component {
+export default class LineGraph extends PureComponent {
   constructor(props) {
     super(props);
-    this._rootNode = React.createRef();
+    this.state = {
+      data: []
+    }
   }
 
   componentDidMount() {
-
-    // D3 Code to create the chart
-    // using this._rootNode as container
-    width = this._rootNode.current.offsetWidth ;
     axios.get(apiUrl + "/year_data/")
     .then((response)=> {
-      this.renderGraph(this._rootNode.current, response.data);
+      console.log("yearly data loaded")
+      this.setState({
+        data: response.data
+      });
     })
     .catch((e)=> {
       console.log(e);
     });
   }
 
-  shouldComponentUpdate() {
-        // Prevents component re-rendering
-        return false;
-    }
-
-  render() {
-    return <div ref={this._rootNode} />;
+  renderYear(year, amount) {
+    return <li key={year}>
+      <span class="year_top">
+        { amount > 0 ? 
+          <img style={{transform: "scale("+amount+")"}} alt={year} src="/images/marker.svg" /> 
+        : null }
+      </span>
+      <span class="year_middle"></span>
+      <span class="year_bottom">
+        <span>
+          { amount > 0 ? year : null }
+        </span>  
+      </span>
+    </li>
   }
 
-  renderGraph(element, json) {
-  
-    svg = d3.select(element)
-      .append("svg")
-        .attr("width", width)
-        .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-        .attr("transform",
-              "translate(" + margin.left + "," + margin.top + ")");
+  render() {
+    let data = this.state.data
+    if (!data || data.length === 0) return null
 
-    // X axis
-    var xScale = d3.scaleBand()
-      .range([ 0, width ])
-      .domain([...Array(63).keys()].map(i=>i+1960))
-      .padding(0.2);
-    
-    var xAxis = d3.axisBottom(xScale)
-    .tickValues(xScale.domain().filter(function(d,i){ return !((i)%5)}));
+    console.log(data)
 
-    svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis)
-      .selectAll("text")
-        .attr("transform", "translate(-10,10)rotate(-80)")
-        .style("text-anchor", "end");
+    // prepend some years at the beginning
+    const prependAmount = 4
+    data.unshift(...Array.from(Array(prependAmount), (e,i)=>({
+      year:i+(data[0].year-prependAmount), 
+      amount:0
+    })))
 
-    let yExtent = d3.extent(json, function(d) { return d.amount; });
+    // append some years at the end
+    const appendAmount = 1
+    data.push(...Array.from(Array(appendAmount), (e,i)=>({
+      year:i+(data[data.length-1].year + appendAmount), 
+      amount:0
+    })))
 
-    // Add Y axis
-    var y = d3.scaleLinear()
-      .domain(yExtent)
-      .range([ height, 0]);
+    console.log(data)
 
-    var yAxis = d3.axisLeft(y)
-      .tickFormat(d3.format("d"))
-      .ticks(yExtent[1])
+    const startYear = data[0].year
+    const endYear = data[data.length-1].year
+        
+    const listEntries = data.map( d => this.renderYear(d.year, d.amount) )
 
-    svg.append("g")
-      .call(yAxis);
-
-    // Bars
-    svg.selectAll("mybar")
-      .data(json)
-      .enter()
-      .append("rect")
-        .attr("x", function(d) { return xScale(d.year); })
-        .attr("y", function(d) { return y(d.amount); })
-        .attr("width", xScale.bandwidth())
-        .attr("height", function(d) { return height - y(d.amount); })
-        .attr("fill", "#69b3a2")
+    return <ol className="LineGraph" start={startYear}>
+        {listEntries}
+    </ol>;
   }
 }

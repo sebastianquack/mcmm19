@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import ReactResizeDetector from 'react-resize-detector';
 import styled from 'styled-components'
 
 import LineGraph from './LineGraph.js';
@@ -23,27 +23,38 @@ class HomePage extends Component {
       userFilter: []
     })
   }
+
+  onResize = (width, height) => {
+    // console.log(width, height)
+    this.setState({
+      showTopMusiciansList: width > 600,
+      showLineGraph: width > 600
+    })
+  }
   
   render() {
     return (
-      <div>
-        <h1>home page</h1>
-        <div style={{width: "66%", float: "left"}}>
-          <MapComponent musicianFilter={this.state.musicianFilter}/>
-        </div>
+      <Container>
         
-        <div style={{width: "30%", float: "left"}}>
+        <MapComponent musicianFilter={this.state.musicianFilter}/>
+        
+        { this.state.showTopMusiciansList &&
           <TopMusiciansList setMusicianFilter={this.setMusicianFilter} musicianFilter={this.state.musicianFilter}/>
-        </div>
+        }
 
-        <div style={{width: "100%", marginTop: 20, marginBottom: 50}}>
+        { this.state.showLineGraph &&
           <LineGraph/>
-        </div>
-
+        }
         
-      </div>
+        <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} />
+      </Container>
     );
   }
 }
 
 export default HomePage;
+
+const Container = styled.div`
+  width: 100%;
+  height: 100%;
+`

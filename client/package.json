@@ -12,7 +12,8 @@
     "react-scripts": "3.0.1",
     "styled-components": "^4.3.2",
     "underscore": "^1.9.1",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "react-resize-detector": "^4.2.0"
   },
   "scripts": {
     "start": "PORT=3001 react-scripts start",

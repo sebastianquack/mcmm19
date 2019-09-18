@@ -1,3 +1,73 @@
+@font-face {
+  font-family: NeutraText;
+  src:  url('/fonts/NeutraText-Bold.otf');
+  /*[unicode-range: <urange>#;]?
+  [font-variant: <font-variant>;]?
+  [font-feature-settings: normal|<feature-tag-value>#;]?
+  [font-stretch: <font-stretch>;]?
+  [font-weight: <weight>];
+  [font-style: <style>];*/
+}
+
 * {
-  font-family: sans-serif;
+  font-family: NeutraText, sans-serif;
+}
+
+.LineGraph {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  width: 100%;
+}
+
+.LineGraph li {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 6em;
+}
+
+.LineGraph li .year_top {
+  height: 3vh;
+  /* background: red; */
+}
+
+.LineGraph li .year_top img {
+  width: auto;
+  height: 1vh;
+  /* background: yellow; */
+}
+
+.LineGraph li .year_middle {
+  height: 3vh;
+}
+
+.LineGraph li .year_middle:before {
+  content: "";
+  border: solid 1px black;
+  border-width: 0 0 0 1px;
+  position: relative;
+  left: calc(50% - 1px);
+}
+
+.LineGraph li .year_bottom {
+  height: 3vh;
+  /* background: green; */
+}
+
+.LineGraph li .year_bottom span {
+  width: calc(1em + 20%);
+  transform: rotate(-90deg) translateX(-100%);
+  overflow: visible;
+  /* background: red; */
+}
+
+
+.LineGraph li > * {
+  position: relative;
+}
+
+.LineGraph li > * > * {
+  position: absolute;
 }
