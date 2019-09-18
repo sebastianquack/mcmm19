@@ -272,7 +272,6 @@ module.exports = function (mongoose) {
                 
                 let result = {};
                 let users = [];
-                console.log("userIds", JSON.stringify(request.query));
 
                 if(request.query.musician) {
                   users = await model.find({
@@ -368,8 +367,6 @@ module.exports = function (mongoose) {
                   isDeleted: {$ne: true}
                 }).sort({year: 1});
                 let result = {docs};
-
-                console.log(result);
 
                 if (result) {
                   return h.response(result);

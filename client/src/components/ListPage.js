@@ -41,7 +41,7 @@ class ListPage extends Component {
         <p>This is your secret edit link: <a href={"#"+this.props.mcmmId}>{"#"+this.props.mcmmId}</a></p>
         <p>Bookmark it to manage your entries later or from other devices. If you lose it, you might lose access to your entries.</p>
       
-        <MapComponent userFilter={[this.props.mcmmId]}/>
+        {/*<MapComponent userFilter={[this.props.mcmmId]}/>*/}
       </div>
     );
   }

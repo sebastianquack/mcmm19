@@ -11,7 +11,7 @@ class HomePage extends Component {
     super(props);
       this.state = {
         musicianFilter: null,
-        userFiler: []
+        userFilter: []
     }
 
     this.setMusicianFilter = this.setMusicianFilter.bind(this);
@@ -35,10 +35,17 @@ class HomePage extends Component {
   render() {
     return (
       <Container>
+
+      { (this.props.userFilter.length > 0) && 
+        <UserFilterInfo>
+          <span>user filter on</span>
+          <ExitButton src="/images/close.png" onClick={()=>this.props.setUserFilter([])}/>
+        </UserFilterInfo>
+      }
         
-        <MapComponent musicianFilter={this.state.musicianFilter}/>
+        <MapComponent userFilter={this.props.userFilter} musicianFilter={this.state.musicianFilter}/>
         
-        { this.state.showTopMusiciansList &&
+        { this.props.wideView &&
           <TopMusiciansList setMusicianFilter={this.setMusicianFilter} musicianFilter={this.state.musicianFilter}/>
         }
 
@@ -58,3 +65,17 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
 `
+
+const UserFilterInfo = styled.div`
+  min-height: 50px;
+`
+
+const ExitButton = styled.img`
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 30px;
+  height: 30px;
+  :hover {cursor: pointer};
+`
+

@@ -6,6 +6,7 @@ import Menu from './Menu.js';
 import ListPage from './ListPage.js';
 import HomePage from './HomePage.js';
 import EditPage from './EditPage.js';
+import ScanPage from './ScanPage.js';
 
 import styled from 'styled-components'
 const uuidv1 = require('uuid/v1');
@@ -18,8 +19,19 @@ class BaseContainer extends Component {
       menuOpen: false,
       currentPage: "home",
       mcmmId: null,
-      navStack: []
+      navStack: [],
+      userFilter: []
     }
+
+    this.setUserFilter = this.setUserFilter.bind(this);
+  }
+
+  setUserFilter(userIds) {
+    this.setState({
+      userFilter: userIds
+    }, ()=>{
+      this.navigate("home");
+    });
   }
 
   componentDidMount() {
@@ -61,7 +73,17 @@ class BaseContainer extends Component {
     }
   }
 
+  reset = () => {
+    this.setUserFilter([]);
+    this.navigate("home");
+  }
+
   back = () => {
+    if(this.state.currentPage == "scan") {
+      this.navigate("home");
+      return;
+    }
+
     let navStack = this.state.navStack;
     let previousPage = navStack.pop();
     this.setState({navStack});
@@ -70,20 +92,24 @@ class BaseContainer extends Component {
 
   render() {
     const pages = {
-      "home": <HomePage/>,
+      "home": <HomePage userFilter={this.state.userFilter} setUserFilter={this.setUserFilter}/>,
       "list": <ListPage mcmmId={this.state.mcmmId} editEntry={(entry)=>{this.navigate("edit", entry)}}/>,
-      "edit": <EditPage mcmmId={this.state.mcmmId} back={this.back} entry={this.state.currentEntry}/>
+      "edit": <EditPage mcmmId={this.state.mcmmId} back={this.back} entry={this.state.currentEntry}/>,
+      "scan": <ScanPage mcmmId={this.state.mcmmId} setUserFilter={this.setUserFilter}/>
     }
     let mainContent = pages[this.state.currentPage];
     
     return (
-      this.state.menuOpen ? <Menu close={this.toggleMenu} navigate={this.navigate}/> : 
+      this.state.menuOpen ? <Menu close={this.toggleMenu} reset={this.reset} navigate={this.navigate}/> : 
       <MainContent>
         <GlobalStyles />
-        <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>
+        {!(this.state.userFilter.length > 0) && <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>}
         {mainContent}
-        {(this.state.currentPage == "home" || this.state.currentPage == "list") && <AddButton onClick={()=>this.navigate("edit")}>add</AddButton>}
-        {this.state.currentPage != "home" && <ExitButton src="/images/close.png" onClick={this.back}/>}
+        {((this.state.currentPage == "home" && !(this.state.userFilter.length > 0)) || this.state.currentPage == "list") && 
+          <AddButton onClick={()=>this.navigate("edit")}>add</AddButton>
+        }
+        {this.state.currentPage != "home" &&
+          <ExitButton src="/images/close.png" onClick={this.back}/>}
       </MainContent>
     );
   }
@@ -104,7 +130,7 @@ const MenuButton = styled.img`
 const MainContent = styled.div`
   height: 100%;
   width: 100%;
-  background: red;
+  background: #fff;
 `
 
 const AddButton = styled.div`

@@ -31,7 +31,7 @@ class MapComponent extends Component {
     if(this.props.musicianFilter) {
       params.musician = this.props.musicianFilter;
     }
-    if(this.props.userFilter) {
+    if(this.props.userFilter && this.props.userFilter.length > 0) {
       params.userIds = JSON.stringify(this.props.userFilter);
     }
 
@@ -59,7 +59,7 @@ class MapComponent extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if(this.props.musicianFilter !== prevProps.musicianFilter) {
+    if(this.props.musicianFilter !== prevProps.musicianFilter || this.props.userFilter !== prevProps.userFilter) {
       this.markers.forEach(m=>{
         m.setMap(null);
       });
