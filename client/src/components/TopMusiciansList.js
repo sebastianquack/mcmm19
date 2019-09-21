@@ -49,14 +49,7 @@ class TopMusiciansList extends Component {
         </li>)
 
     return (
-      <Container>
-        { this.props.musicianFilter && 
-          <p>filter: {this.props.musicianFilter} 
-            <Clear onClick={()=>this.props.setMusicianFilter(null)}>
-              clear
-            </Clear>
-          </p>
-        }
+      <Container filterOn={this.props.filterOn}>
         <ul>{entries}</ul>
       </Container>
     );
@@ -68,7 +61,7 @@ export default TopMusiciansList;
 const Container = styled.div`
   position: fixed;
   right: 0;
-  top: 0;
+  top: ${props => props.filterOn ? "60px" : "0" };
   width: 33vw;
   padding: 1rem 1rem 0 0;
   box-sizing: border-box;

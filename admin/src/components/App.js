@@ -45,9 +45,27 @@ const EntryList = props =>
   </List>;
 
 
+const FilterForm = 
+    <SimpleForm>
+        <TextInput source="username" />
+        <TextInput source="filter" />
+    </SimpleForm>
+const FilterEdit = props => <Edit {...props}>{FilterForm}</Edit>;
+const FilterCreate = props => <Create {...props}>{FilterForm}</Create>;
+
+const FilterList = props =>
+  <List {...props}>
+    <Datagrid rowClick="edit">
+        <TextField source="username" />
+        <TextField source="filter" />
+    </Datagrid>
+  </List>;
+
+
 const App = () => 
   <Admin dataProvider={dataProvider} authProvider={authProvider}>
     <Resource name="entry" list={EntryList} edit={EntryEdit} create={EntryCreate}/>
+    <Resource name="filter" list={FilterList} edit={FilterEdit} create={FilterCreate}/>
   </Admin>
 
 export default App;

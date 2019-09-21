@@ -6,6 +6,9 @@ import LineGraph from './LineGraph.js';
 import MapComponent from './MapComponent.js';
 import TopMusiciansList from './TopMusiciansList.js';
 
+import axios from 'axios';
+import { apiUrl } from '../helpers'
+
 class HomePage extends Component {
   constructor(props) {
     super(props);
@@ -14,16 +17,10 @@ class HomePage extends Component {
         userFilter: []
     }
 
-    this.setMusicianFilter = this.setMusicianFilter.bind(this);
+    this.handleFilterClose = this.handleFilterClose.bind(this);
   }
 
-  setMusicianFilter(musician) {
-    this.setState({
-      musicianFilter: musician,
-      userFilter: []
-    })
-  }
-
+  
   onResize = (width, height) => {
     // console.log(width, height)
     this.setState({
@@ -31,26 +28,50 @@ class HomePage extends Component {
       showLineGraph: width > 600
     })
   }
+
+  handleFilterClose() {
+
+    console.log("handleFilterClose");
+
+    axios.post(apiUrl + "/remove_filter/" + this.props.mcmmId)
+    .then((response)=> {
+      console.log(response);
+    })
+    .catch((e)=> {
+      console.log(e);
+    });
+
+    this.props.setUserFilter([]);
+    this.props.setMusicianFilter(null)
+  }
   
   render() {
+    const showFilterBar = (this.props.userFilter.length > 0 || this.props.musicianFilter)
+
     return (
       <Container>
 
-      { (this.props.userFilter.length > 0) && 
+      { showFilterBar && 
         <UserFilterInfo>
-          <span>user filter on</span>
-          <ExitButton src="/images/close.png" onClick={()=>this.props.setUserFilter([])}/>
+          {(this.props.userFilter.length > 0) && <span>filter for {this.props.userFilter.length} users</span>}
+          {(this.props.musicianFilter) && <span>filter for users that named {this.props.musicianFilter}</span>}
+
+          <ExitButton src="/images/close.png" onClick={this.handleFilterClose}/>
         </UserFilterInfo>
       }
-        
-        <MapComponent userFilter={this.props.userFilter} musicianFilter={this.state.musicianFilter}/>
+
+        <MapComponent userFilter={this.props.userFilter} musicianFilter={this.props.musicianFilter}/>
         
         { this.state.showTopMusiciansList &&
-          <TopMusiciansList setMusicianFilter={this.setMusicianFilter} musicianFilter={this.state.musicianFilter}/>
+          <TopMusiciansList 
+            musicianFilter={this.props.musicianFilter}
+            setMusicianFilter={this.props.setMusicianFilter}
+            filterOn={showFilterBar}
+          />
         }
 
         { this.state.showLineGraph &&
-          <LineGraph musicianFilter={this.state.musicianFilter}/>
+          <LineGraph musicianFilter={this.props.musicianFilter}/>
         }
         
         <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} />
@@ -67,7 +88,8 @@ const Container = styled.div`
 `
 
 const UserFilterInfo = styled.div`
-  min-height: 50px;
+  min-height: 60px;
+  padding: 20px;
 `
 
 const ExitButton = styled.img`
@@ -76,6 +98,7 @@ const ExitButton = styled.img`
   right: 20px;
   width: 30px;
   height: 30px;
+  z-index: 100;
   :hover {cursor: pointer};
 `
 

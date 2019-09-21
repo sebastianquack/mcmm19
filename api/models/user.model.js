@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+let Joi = require('joi')
 
 module.exports = function(mongoose) {
   let modelName = "user";

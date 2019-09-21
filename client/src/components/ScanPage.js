@@ -14,6 +14,30 @@ class ScanPage extends Component {
       this.state = {
         result: 'No result'
     }
+
+    this.pollFilter = this.pollFilter.bind(this);
+
+  }
+
+  componentDidMount() {
+    this.pollInterval = setInterval(this.pollFilter, 5000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.pollInterval);
+  }
+
+  pollFilter() {
+    axios.get(apiUrl + "/filter?username=" + this.props.mcmmId)
+    .then((response)=> {
+      console.log(response);
+      if(response.data && response.data.docs && response.data.docs.length) {
+        this.props.setUserFilter([this.props.mcmmId, response.data.docs]);  
+      }
+    })
+    .catch((e)=> {
+      console.log(e);
+    });
   }
 
   handleScan = data => {
@@ -23,6 +47,14 @@ class ScanPage extends Component {
       })
 
       this.props.setUserFilter([this.props.mcmmId, data]);
+
+      axios.post(apiUrl + "/set_filter/" + data + "/" + this.props.mcmmId)
+      .then((response)=> {
+        console.log(response);
+      })
+      .catch((e)=> {
+        console.log(e);
+      });
     }
   }
   
@@ -36,7 +68,10 @@ class ScanPage extends Component {
       <div>
         <h1>scanner</h1>
 
-        <QRCode value={this.props.mcmmId}/>
+        <div style={{padding: 50}}>
+          <QRCode value={this.props.mcmmId}/>
+        </div>
+
 
         <QrReader
           delay={300}

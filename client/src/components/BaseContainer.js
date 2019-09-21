@@ -20,18 +20,27 @@ class BaseContainer extends Component {
       currentPage: "home",
       mcmmId: null,
       navStack: [],
-      userFilter: []
+      userFilter: [],
+      musicianFilter: null
     }
 
     this.setUserFilter = this.setUserFilter.bind(this);
+    this.setMusicianFilter = this.setMusicianFilter.bind(this);
   }
 
-  setUserFilter(userIds) {
+  setUserFilter(filter) {
     this.setState({
-      userFilter: userIds
+      userFilter: filter
     }, ()=>{
       this.navigate("home");
     });
+  }
+
+  setMusicianFilter(musician) {
+    this.setState({
+      musicianFilter: musician,
+      userFilter: []
+    })
   }
 
   componentDidMount() {
@@ -91,8 +100,15 @@ class BaseContainer extends Component {
   }
 
   render() {
+    const showFilterBar = (this.state.userFilter.length > 0 || this.state.musicianFilter)
+
     const pages = {
-      "home": <HomePage userFilter={this.state.userFilter} setUserFilter={this.setUserFilter}/>,
+      "home": <HomePage mcmmId={this.state.mcmmId} 
+        userFilter={this.state.userFilter} 
+        setUserFilter={this.setUserFilter}
+        musicianFilter={this.state.musicianFilter}
+        setMusicianFilter={this.setMusicianFilter}
+        />,
       "list": <ListPage mcmmId={this.state.mcmmId} editEntry={(entry)=>{this.navigate("edit", entry)}}/>,
       "edit": <EditPage mcmmId={this.state.mcmmId} back={this.back} entry={this.state.currentEntry}/>,
       "scan": <ScanPage mcmmId={this.state.mcmmId} setUserFilter={this.setUserFilter}/>
@@ -106,9 +122,9 @@ class BaseContainer extends Component {
         <Menu key="main" close={this.toggleMenu} navigate={this.navigate}/> 
         : 
           <MainContent key="main">
-            {!(this.state.userFilter.length > 0) && <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>}
+            {!(this.state.userFilter.length > 0 || this.state.musicianFilter) && <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>}
             {mainContent}
-            {((this.state.currentPage === "home" && !(this.state.userFilter.length > 0)) || this.state.currentPage == "list") && 
+            {(this.state.currentPage === "home" && !showFilterBar || this.state.currentPage == "list") && 
               <AddButton onClick={()=>this.navigate("edit")}>
                 +
               </AddButton>
