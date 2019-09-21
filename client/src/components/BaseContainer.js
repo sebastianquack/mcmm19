@@ -183,21 +183,4 @@ const ExitButton = styled.img`
   &:hover {cursor: pointer};
 `
 const GlobalStyles = createGlobalStyle`
-
-  @font-face {
-    font-family: NeutraText;
-    src:  url('/fonts/NeutraText-Bold.otf');
-    /*[unicode-range: <urange>#;]?
-    [font-variant: <font-variant>;]?
-    [font-feature-settings: normal|<feature-tag-value>#;]?
-    [font-stretch: <font-stretch>;]?
-    [font-weight: <weight>];
-    [font-style: <style>];*/
-  }
-
-  html, body, #root {
-    height: 100%;
-    width: 100%;
-    font-family: NeutraText, sans-serif;
-  }
 `
