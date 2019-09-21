@@ -6,6 +6,7 @@ import Menu from './Menu.js';
 import ListPage from './ListPage.js';
 import HomePage from './HomePage.js';
 import EditPage from './EditPage.js';
+import ScanPage from './ScanPage.js';
 
 import styled from 'styled-components'
 const uuidv1 = require('uuid/v1');
@@ -18,8 +19,28 @@ class BaseContainer extends Component {
       menuOpen: false,
       currentPage: "home",
       mcmmId: null,
-      navStack: []
+      navStack: [],
+      userFilter: [],
+      musicianFilter: null
     }
+
+    this.setUserFilter = this.setUserFilter.bind(this);
+    this.setMusicianFilter = this.setMusicianFilter.bind(this);
+  }
+
+  setUserFilter(filter) {
+    this.setState({
+      userFilter: filter
+    }, ()=>{
+      this.navigate("home");
+    });
+  }
+
+  setMusicianFilter(musician) {
+    this.setState({
+      musicianFilter: musician,
+      userFilter: []
+    })
   }
 
   componentDidMount() {
@@ -61,7 +82,17 @@ class BaseContainer extends Component {
     }
   }
 
+  reset = () => {
+    this.setUserFilter([]);
+    this.navigate("home");
+  }
+
   back = () => {
+    if(this.state.currentPage == "scan") {
+      this.navigate("home");
+      return;
+    }
+
     let navStack = this.state.navStack;
     let previousPage = navStack.pop();
     this.setState({navStack});
@@ -69,10 +100,18 @@ class BaseContainer extends Component {
   }
 
   render() {
+    const showFilterBar = (this.state.userFilter.length > 0 || this.state.musicianFilter)
+
     const pages = {
-      "home": <HomePage/>,
+      "home": <HomePage mcmmId={this.state.mcmmId} 
+        userFilter={this.state.userFilter} 
+        setUserFilter={this.setUserFilter}
+        musicianFilter={this.state.musicianFilter}
+        setMusicianFilter={this.setMusicianFilter}
+        />,
       "list": <ListPage mcmmId={this.state.mcmmId} editEntry={(entry)=>{this.navigate("edit", entry)}}/>,
-      "edit": <EditPage mcmmId={this.state.mcmmId} back={this.back} entry={this.state.currentEntry}/>
+      "edit": <EditPage mcmmId={this.state.mcmmId} back={this.back} entry={this.state.currentEntry}/>,
+      "scan": <ScanPage mcmmId={this.state.mcmmId} setUserFilter={this.setUserFilter}/>
     }
     let mainContent = pages[this.state.currentPage];
     
@@ -83,9 +122,9 @@ class BaseContainer extends Component {
         <Menu key="main" close={this.toggleMenu} navigate={this.navigate}/> 
         : 
           <MainContent key="main">
-            <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>
+            {!(this.state.userFilter.length > 0 || this.state.musicianFilter) && <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>}
             {mainContent}
-            {(this.state.currentPage === "home" || this.state.currentPage == "list") && 
+            {(this.state.currentPage === "home" && !showFilterBar || this.state.currentPage == "list") && 
               <AddButton onClick={()=>this.navigate("edit")}>
                 +
               </AddButton>
@@ -114,6 +153,10 @@ const MenuButton = styled.img`
 const MainContent = styled.div`
   height: 100%;
   width: 100%;
+<<<<<<< HEAD
+  background: #fff;
+=======
+>>>>>>> 243f5202a1cc7f781d990eab874d668d0cf67764
 `
 
 const AddButton = styled.div`

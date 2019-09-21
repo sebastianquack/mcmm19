@@ -13,8 +13,9 @@ class Menu extends Component {
   render() {
     return (
       <MenuContainer>
-        <MenuButton onClick={()=>this.props.navigate("home")}>home</MenuButton>
+        <MenuButton onClick={this.props.reset}>home</MenuButton>
         <MenuButton onClick={()=>this.props.navigate("list")}>my entries</MenuButton>
+        <MenuButton onClick={()=>this.props.navigate("scan")}>scanner</MenuButton>
         <ExitButton src="/images/close.png"  onClick={this.props.close}/>
       </MenuContainer>
     );

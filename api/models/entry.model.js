@@ -70,97 +70,7 @@ module.exports = function (mongoose) {
       },
 
       extraEndpoints: [
-          
-          /* get data for graph
-
-
-
-          */
-
-          function (server, model, options, logger) {
-            const Log = logger.bind("Get graph data")
-            let Boom = require('boom')
-
-            let handler = async function (request, h) {
-              try {                
-
-                let nodes = [];
-                let links = [];
-
-                // assemble nodes
-                
-                let musicians = await model.find({isDeleted: {$ne: true}}).distinct('musician');
-                for(let i = 0; i < musicians.length; i++) {
-                  let musician = musicians[i];
-                  let count = await model.find({musician: musician}).count();
-                  nodes.push({
-                    name: musician,
-                    id: musician,
-                    weight: count
-                  });
-                }
-
-                // create music - music links out of music - user - music
-
-                // go over all individual users
-                let user_ids = await model.find({isDeleted: {$ne: true}}).distinct('user_id');
-                for(let i = 0; i < user_ids.length; i++) {
-                  // go over entries by this user
-                  let user_entries = await model.find({user_id: user_ids[i], isDeleted: {$ne: true}});
-                  user_entries.forEach((sourceEntry) => {
-                    // look at all this users other entries
-                    user_entries.forEach((targetEntry) => {
-                      if(sourceEntry.musician != targetEntry.musician) {
-                        links.push({
-                          source: sourceEntry.musician,
-                          target: targetEntry.musician,
-                          strength: 1
-                        });   
-                      }
-                    });
-                  });
-                }
-
-                console.log(nodes, links);
-
-                return h.response({
-                  nodes: nodes,
-                  links: links
-                });
-                
-              } catch(err) {
-                if (!err.isBoom) {
-                  Log.error(err)
-                  throw Boom.badImplementation(err)
-                } else {
-                  throw err
-                }
-              }
-            }
-
-            server.route({
-              method: 'GET',
-              path: '/graph_data/',
-              config: {
-                handler: handler,
-                auth: false,
-                description: 'Get graph data',
-                tags: ['api'],
-                plugins: {
-                  'hapi-swagger': {
-                    responseMessages: [
-                      {code: 200, message: 'Success'},
-                      {code: 400, message: 'Bad Request'},
-                      {code: 404, message: 'Not Found'},
-                      {code: 500, message: 'Internal Server Error'}
-                    ]
-                  }
-                }
-              }
-            })
-          },
-
-          
+                    
           /* get distribution of years
 
 
@@ -173,18 +83,31 @@ module.exports = function (mongoose) {
 
             let handler = async function (request, h) {
               try {
+
+                queryFilter = {};
+
+                if(request.query.musician) {
                 
-                let minYears = await model.find({}).sort({ "year": 1 }).limit(1)
+                  let user_ids = await model.find({
+                      isDeleted: {$ne: true},
+                      musician: request.query.musician
+                  }).distinct('user_id');
+
+                  queryFilter = {user_id: {$in: user_ids}}
+
+                }
+                
+                let minYears = await model.find(queryFilter).sort({ "year": 1 }).limit(1)
                 let minYear = minYears[0].year;
 
-                let maxYears = await model.find({}).sort({ "year": -1 }).limit(1)
+                let maxYears = await model.find(queryFilter).sort({ "year": -1 }).limit(1)
                 let maxYear = maxYears[0].year;
                 
                 let data = [];
 
                 for(let i = minYear; i <= maxYear; i++) {
 
-                  let amount = await model.find({year: i, isDeleted: {$ne: true}}).count();
+                  let amount = await model.find({...queryFilter, year: i, isDeleted: {$ne: true}}).count();
                   data.push({
                     year: i,
                     amount
@@ -212,6 +135,9 @@ module.exports = function (mongoose) {
                 description: 'get distribution of years',
                 tags: ['api'],
                 validate: {
+                  query: {
+                    musician: Joi.string()
+                  }
                 },
                 plugins: {
                   'hapi-swagger': {
@@ -353,20 +279,22 @@ module.exports = function (mongoose) {
                     isDeleted: {$ne: true},
                   }).distinct('user_id');
                 } else {
-                  users = await model.find({
-                    isDeleted: {$ne: true},
-                  }).distinct('user_id');
+                  if(request.query.userIds) {
+                    console.log("userIds", request.query.userIds);
+                    users = request.query.userIds;
+                  } else {
+                    users = await model.find({
+                      isDeleted: {$ne: true},
+                    }).distinct('user_id');
+                  }
                 }
 
                 for(let i = 0; i < users.length; i++) {
                   let u = users[i];
-                  console.log(u);
                   let entries = await model.find({
                     user_id: u,
                     isDeleted: {$ne: true},
                   });
-
-                  console.log(entries);
 
                   if(entries.length) {
 
@@ -439,8 +367,6 @@ module.exports = function (mongoose) {
                   isDeleted: {$ne: true}
                 }).sort({year: 1});
                 let result = {docs};
-
-                console.log(result);
 
                 if (result) {
                   return h.response(result);
