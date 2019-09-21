@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import "css-reset-and-normalize";
 import { createGlobalStyle } from "styled-components";
+import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
 import Menu from './Menu.js';
 import ListPage from './ListPage.js';
@@ -44,6 +45,7 @@ class BaseContainer extends Component {
   }
 
   componentDidMount() {
+    disableBodyScroll(document.querySelector('body'))
     let hash = window.location.hash;
     let mcmmId = localStorage.getItem('mcmmId');  
     if(hash) {
@@ -153,10 +155,6 @@ const MenuButton = styled.img`
 const MainContent = styled.div`
   height: 100%;
   width: 100%;
-<<<<<<< HEAD
-  background: #fff;
-=======
->>>>>>> 243f5202a1cc7f781d990eab874d668d0cf67764
 `
 
 const AddButton = styled.div`
@@ -200,9 +198,6 @@ const GlobalStyles = createGlobalStyle`
   html, body, #root {
     height: 100%;
     width: 100%;
-  }
-
-  body {
     font-family: NeutraText, sans-serif;
   }
 `
