@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactResizeDetector from 'react-resize-detector';
 import styled from 'styled-components'
 
 import LineGraph from './LineGraph.js';
@@ -20,15 +19,6 @@ class HomePage extends Component {
     this.handleFilterClose = this.handleFilterClose.bind(this);
   }
 
-  
-  onResize = (width, height) => {
-    // console.log(width, height)
-    this.setState({
-      showTopMusiciansList: width > 600,
-      showLineGraph: width > 600
-    })
-  }
-
   handleFilterClose() {
 
     console.log("handleFilterClose");
@@ -47,7 +37,7 @@ class HomePage extends Component {
   
   render() {
     const showFilterBar = (this.props.userFilter.length > 0 || this.props.musicianFilter)
-
+console.log(this.props.largeScreen)
     return (
       <Container>
 
@@ -62,7 +52,7 @@ class HomePage extends Component {
 
         <MapComponent userFilter={this.props.userFilter} musicianFilter={this.props.musicianFilter}/>
         
-        { this.state.showTopMusiciansList &&
+        { this.props.largeScreen &&
           <TopMusiciansList 
             musicianFilter={this.props.musicianFilter}
             setMusicianFilter={this.props.setMusicianFilter}
@@ -70,11 +60,10 @@ class HomePage extends Component {
           />
         }
 
-        { this.state.showLineGraph &&
+        { this.props.largeScreen &&
           <LineGraph musicianFilter={this.props.musicianFilter}/>
         }
         
-        <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} />
       </Container>
     );
   }
