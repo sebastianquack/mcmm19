@@ -103,8 +103,8 @@ class EditPage extends Component {
 
   fixYear = year => {
     const yearMax = new Date().getFullYear()
-    const yearMin = yearMax - 80
-    if ( year < yearMin) year = yearMin
+    const yearMin = 1950
+    if ( year < yearMin && year !== "") year = yearMin
     if ( year > yearMax) year = yearMax
     return year
   }

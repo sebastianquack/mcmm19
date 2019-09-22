@@ -41,7 +41,7 @@ export default class LineGraph extends PureComponent {
     return <li key={year}>
       <span className="year_top">
         { amount > 0 ? 
-          <img style={{transform: "scale("+amount+")"}} alt={year} src="/images/marker.svg" /> 
+          <img style={{transform: "translateX(-50%) scale("+amount+")"}} alt={year} src="/images/marker.svg" /> 
         : null }
       </span>
       <span className="year_middle"></span>
@@ -105,8 +105,11 @@ const Ol = styled.ol`
   }
 
   li .year_top img {
+    left: 50%;
     width: auto;
     height: 1vh;
+    transform-origin: center 67%;
+    
     /* background: yellow; */
   }
 

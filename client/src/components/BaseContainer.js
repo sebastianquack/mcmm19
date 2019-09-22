@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import "css-reset-and-normalize";
 import { createGlobalStyle } from "styled-components";
+import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
+import ReactResizeDetector from 'react-resize-detector';
 
 import Menu from './Menu.js';
 import ListPage from './ListPage.js';
@@ -8,6 +10,7 @@ import HomePage from './HomePage.js';
 import EditPage from './EditPage.js';
 import ScanPage from './ScanPage.js';
 
+import { isLargeScreen } from '../helpers/'
 import styled from 'styled-components'
 const uuidv1 = require('uuid/v1');
 
@@ -28,6 +31,13 @@ class BaseContainer extends Component {
     this.setMusicianFilter = this.setMusicianFilter.bind(this);
   }
 
+  onResize = (width, height) => {
+    console.log(this.state.largeScreen)
+    this.setState({
+      largeScreen: isLargeScreen(width, height),
+    })
+  }  
+
   setUserFilter(filter) {
     this.setState({
       userFilter: filter
@@ -44,6 +54,7 @@ class BaseContainer extends Component {
   }
 
   componentDidMount() {
+    disableBodyScroll(document.querySelector('body'))
     let hash = window.location.hash;
     let mcmmId = localStorage.getItem('mcmmId');  
     if(hash) {
@@ -108,6 +119,7 @@ class BaseContainer extends Component {
         setUserFilter={this.setUserFilter}
         musicianFilter={this.state.musicianFilter}
         setMusicianFilter={this.setMusicianFilter}
+        largeScreen={this.state.largeScreen}
         />,
       "list": <ListPage mcmmId={this.state.mcmmId} editEntry={(entry)=>{this.navigate("edit", entry)}}/>,
       "edit": <EditPage mcmmId={this.state.mcmmId} back={this.back} entry={this.state.currentEntry}/>,
@@ -118,6 +130,7 @@ class BaseContainer extends Component {
     return (
       [
         <GlobalStyles key="globalstyles" />,
+        <ReactResizeDetector key="resize" handleWidth handleHeight onResize={this.onResize} />,
         this.state.menuOpen ?
         <Menu key="main" close={this.toggleMenu} navigate={this.navigate}/> 
         : 
@@ -125,7 +138,7 @@ class BaseContainer extends Component {
             {!(this.state.userFilter.length > 0 || this.state.musicianFilter) && <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>}
             {mainContent}
             {(this.state.currentPage === "home" && !showFilterBar || this.state.currentPage == "list") && 
-              <AddButton onClick={()=>this.navigate("edit")}>
+              <AddButton onClick={()=>this.navigate("edit")} largeScreen={this.state.largeScreen}>
                 +
               </AddButton>
             }
@@ -154,14 +167,13 @@ const MainContent = styled.div`
   height: 100%;
   width: 100%;
   background: #fff;
-
 `
 
 const AddButton = styled.div`
   position: fixed;
   z-index: 100;
   right: 1rem;
-  bottom: 2rem;
+  bottom: ${ props => (props.largeScreen ? "9rem" : "2rem") };
   width: 2.5rem;
   height: 2.5rem;
   font-size: 2rem;
@@ -183,24 +195,4 @@ const ExitButton = styled.img`
   &:hover {cursor: pointer};
 `
 const GlobalStyles = createGlobalStyle`
-
-  @font-face {
-    font-family: NeutraText;
-    src:  url('/fonts/NeutraText-Bold.otf');
-    /*[unicode-range: <urange>#;]?
-    [font-variant: <font-variant>;]?
-    [font-feature-settings: normal|<feature-tag-value>#;]?
-    [font-stretch: <font-stretch>;]?
-    [font-weight: <weight>];
-    [font-style: <style>];*/
-  }
-
-  html, body, #root {
-    height: 100%;
-    width: 100%;
-  }
-
-  body {
-    font-family: NeutraText, sans-serif;
-  }
 `
