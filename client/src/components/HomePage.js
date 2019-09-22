@@ -37,7 +37,7 @@ class HomePage extends Component {
   
   render() {
     const showFilterBar = (this.props.userFilter.length > 0 || this.props.musicianFilter)
-console.log(this.props.largeScreen)
+
     return (
       <Container>
 

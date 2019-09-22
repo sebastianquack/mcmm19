@@ -151,5 +151,46 @@ export default MapComponent;
 const MapContainer = styled.div`
   width: 100%; 
   height: 100%;
-  visibility: ${props => props.visible != false ? "visible" : "hidden"}
+  visibility: ${props => props.visible != false ? "visible" : "hidden"};
+
+  .gm-style .gm-style-iw-t::after {
+    /* popup triangle */
+    /* background: linear-gradient(45deg,rgba(0,0,0,1) 50%,rgba(0,0,0,,0) 51%,rgba(0,0,0,0,0) 100%); */
+    display: none;
+  }
+
+  .gm-style button {
+    background-image: url("/images/closeWhite.png") !important;
+    background-size: cover !important;
+    top: 1rem !important;
+    right: 1rem !important;
+    padding: 0.25rem !important;
+    width: 1rem !important;
+    height: 1rem !important;
+    opacity: 1;
+
+    img {
+      visibility: hidden;
+    }
+  }
+
+  .gm-style-iw-d {
+    overflow: hidden !important;
+  }
+
+  .gm-style .gm-style-iw-c {
+    border-radius: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: black;
+    color: white;
+    transform: translate(0%,-100%);
+    top: 1rem;
+
+    padding: 2rem 1rem 1rem 1rem !important;
+
+    &, *::after, *::before {
+      border: none;
+    }
+  }
 `
