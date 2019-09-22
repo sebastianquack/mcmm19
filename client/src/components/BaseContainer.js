@@ -153,10 +153,8 @@ const MenuButton = styled.img`
 const MainContent = styled.div`
   height: 100%;
   width: 100%;
-<<<<<<< HEAD
   background: #fff;
-=======
->>>>>>> 243f5202a1cc7f781d990eab874d668d0cf67764
+
 `
 
 const AddButton = styled.div`
