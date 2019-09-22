@@ -162,8 +162,8 @@ const MapContainer = styled.div`
   .gm-style button {
     background-image: url("/images/closeWhite.png") !important;
     background-size: cover !important;
-    top: 1rem !important;
-    right: 1rem !important;
+    top: 0.25rem !important;
+    right: 0.25rem !important;
     padding: 0.25rem !important;
     width: 1rem !important;
     height: 1rem !important;
@@ -186,8 +186,9 @@ const MapContainer = styled.div`
     color: white;
     transform: translate(0%,-100%);
     top: 1rem;
+    z-index: 10;
 
-    padding: 2rem 1rem 1rem 1rem !important;
+    padding: 1rem 0.25rem 0.25rem 0.25rem !important;
 
     &, *::after, *::before {
       border: none;
