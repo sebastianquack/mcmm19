@@ -72,13 +72,15 @@ class MapComponent extends Component {
   }
 
   drawMap() {
+
+      let filterMode = (this.props.musicianFilter || (this.props.userFilter && this.props.userFilter.length > 0));
     
       const icon = {
         url: "/images/marker.svg", // url
         scaledSize: {height: 30, width: 30}, // scaled size
         origin: {x:0, y:0}, // origin
         anchor: {x:12.5, y:12.5}, // anchor
-        labelOrigin: new google.maps.Point(12.5, 12.5)
+        labelOrigin: new google.maps.Point(12.5, 40)
       };
       var latlngbounds = new window.google.maps.LatLngBounds();
 
@@ -86,23 +88,26 @@ class MapComponent extends Component {
 
         let firstEntry = this.state.entries[k][0];
 
+        // assemble content
+        let content = firstEntry.city + "<br>";
+        let musicians = "";
+        this.state.entries[k].forEach((e) => {
+          content += e.musician + " " + e.year + "<br>";
+          musicians += e.musician + " ";
+        });
+        
         // add markers for user
         let marker = new google.maps.Marker({
             position: firstEntry.cityLocation,
             icon: icon,
-            /*label: {
-              color: "#fff",
+            label: filterMode ? {
+              color: "#000",
               fontSize: "14px",
-              text: "entry text on map if needed",
-            },*/
+              text: musicians,
+            } : undefined,
             map: this.map,
         })
 
-        let content = firstEntry.city + "<br>";
-        this.state.entries[k].forEach((e) => {
-          content += e.musician + " " + e.year + "<br>";
-        });
-          
         let infoWindow = new google.maps.InfoWindow({
           content: content
         });
@@ -121,22 +126,47 @@ class MapComponent extends Component {
         this.infoWindows.forEach(i=>{i.close()});
       });
         
-        /*
-        // add lines for user
-        user.entries.slice(0, -1).forEach((e, index)=>
+      this.lines.forEach(l=>l.setMap(null));
+      this.lines = [];
+      
+      if(filterMode) {
+        
+        let paths = {};
+        
+        // gather path data
+        Object.keys(this.state.entries).forEach(k=>{      
+          this.state.entries[k].forEach(e=>{
+
+            if(!paths[e.user_id]) {
+              paths[e.user_id] = [];
+            }
+            paths[e.user_id].push({
+              location: e.cityLocation,
+              year: e.year
+            });
+          })
+        });
+
+        console.log(paths);
+
+        // sort entries by year and assemble polylines
+        Object.keys(paths).forEach(k=>{
+          let p = paths[k];
+          p.sort((a, b)=>{return b.year-a.year});
+          let locationPath = p.map(l=>{return {lat: l.location.lat, lng: l.location.lng}});
           this.lines.push(
             new google.maps.Polyline({
-              path: [user.entries[index].cityLocation, user.entries[index+1].cityLocation],
+              path: locationPath,
               //geodesic: true,
               strokeColor: '#aaa',
               strokeOpacity: 1.0,
               strokeWeight: 1
             })
           )
-        );
-        */
+        });
 
-      this.lines.forEach(l=>l.setMap(this.map));
+        this.lines.forEach(l=>l.setMap(this.map));
+      }
       
       this.map.fitBounds(latlngbounds);
       var zoom = this.map.getZoom();
