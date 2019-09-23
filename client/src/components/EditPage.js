@@ -172,7 +172,7 @@ class EditPage extends Component {
           />
           <br/>
           <Label>note</Label>
-          <textarea name="note" value={this.state.note} onChange={this.handleInputChange}/>
+          <textarea name="note" maxlength="200" value={this.state.note} onChange={this.handleInputChange}/>
           <br/>
           {this.state.changed && <Button onClick={this.handleSubmit}>save</Button>}
           {this.state._id && <Button onClick={this.handleDelete}>delete entry</Button>}

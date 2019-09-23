@@ -107,7 +107,8 @@ class MapComponent extends Component {
           content: content
         });
 
-        marker.addListener('click', function() {
+        marker.addListener('click', ()=> {
+          this.infoWindows.forEach(i=>{i.close()});
           infoWindow.open(this.map, marker);
         });
 
@@ -115,6 +116,10 @@ class MapComponent extends Component {
         this.infoWindows.push(infoWindow);
         latlngbounds.extend(firstEntry.cityLocation);
       })
+
+      google.maps.event.addListener(this.map, "click", (e)=> {
+        this.infoWindows.forEach(i=>{i.close()});
+      });
         
         /*
         // add lines for user
