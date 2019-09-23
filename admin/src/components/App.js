@@ -61,11 +61,21 @@ const FilterList = props =>
     </Datagrid>
   </List>;
 
+const TranslationForm = 
+    <SimpleForm>
+        <TextInput source="key" />
+        <LongTextInput source="content_en" />
+        <LongTextInput source="content_de" />
+    </SimpleForm>
+const TranslationEdit = props => <Edit {...props}>{TranslationForm}</Edit>;
+const TranslationCreate = props => <Create {...props}>{TranslationForm}</Create>;
+
 
 const App = () => 
   <Admin dataProvider={dataProvider} authProvider={authProvider}>
     <Resource name="entry" list={EntryList} edit={EntryEdit} create={EntryCreate}/>
     <Resource name="filter" list={FilterList} edit={FilterEdit} create={FilterCreate}/>
+    <Resource name="translation" list={ListGuesser} edit={TranslationEdit} create={TranslationCreate}/>
   </Admin>
 
 export default App;

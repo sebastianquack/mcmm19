@@ -9,6 +9,10 @@ import ListPage from './ListPage.js';
 import HomePage from './HomePage.js';
 import EditPage from './EditPage.js';
 import ScanPage from './ScanPage.js';
+import StaticPage from './StaticPage.js';
+
+import axios from 'axios';
+import { apiUrl } from '../helpers'
 
 import { isLargeScreen } from '../helpers/'
 import styled from 'styled-components'
@@ -24,11 +28,14 @@ class BaseContainer extends Component {
       mcmmId: null,
       navStack: [],
       userFilter: [],
-      musicianFilter: null
+      musicianFilter: null,
+      translations: [],
+      locale: "de"
     }
 
     this.setUserFilter = this.setUserFilter.bind(this);
     this.setMusicianFilter = this.setMusicianFilter.bind(this);
+    this.setLocale = this.setLocale.bind(this);
   }
 
   onResize = (width, height) => {
@@ -37,6 +44,10 @@ class BaseContainer extends Component {
       largeScreen: isLargeScreen(width, height),
     })
   }  
+
+  setLocale = (l)=> {
+    this.setState({locale: l})
+  }
 
   setUserFilter(filter) {
     this.setState({
@@ -53,7 +64,7 @@ class BaseContainer extends Component {
     })
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     disableBodyScroll(document.querySelector('body'))
     let hash = window.location.hash;
     let mcmmId = localStorage.getItem('mcmmId');  
@@ -70,7 +81,13 @@ class BaseContainer extends Component {
     }
     this.setState({mcmmId: mcmmId});  
     localStorage.setItem('mcmmId', mcmmId);    
+  
+    let response = await axios.get(apiUrl + "/translation");
+    console.log(response);
+    this.setState({translations: response.data.docs});
+
   }
+
 
   toggleMenu = ()=>{
     this.setState({menuOpen: !this.state.menuOpen})
@@ -86,7 +103,8 @@ class BaseContainer extends Component {
     this.setState({
       menuOpen: false,
       currentPage: page,
-      currentEntry: entry
+      currentEntry: entry,
+      pageKey: entry
     });
     if(page != "list") {
       window.history.pushState("", document.title, window.location.pathname);
@@ -120,10 +138,30 @@ class BaseContainer extends Component {
         musicianFilter={this.state.musicianFilter}
         setMusicianFilter={this.setMusicianFilter}
         largeScreen={this.state.largeScreen}
+        translations={this.state.translations}
+        locale={this.state.locale}
         />,
-      "list": <ListPage mcmmId={this.state.mcmmId} editEntry={(entry)=>{this.navigate("edit", entry)}}/>,
-      "edit": <EditPage mcmmId={this.state.mcmmId} back={this.back} entry={this.state.currentEntry}/>,
-      "scan": <ScanPage mcmmId={this.state.mcmmId} setUserFilter={this.setUserFilter}/>
+      "list": <ListPage 
+        mcmmId={this.state.mcmmId} editEntry={(entry)=>{this.navigate("edit", entry)}}
+        translations={this.state.translations}
+        locale={this.state.locale}
+        />,
+      "edit": <EditPage 
+        mcmmId={this.state.mcmmId} back={this.back} 
+        entry={this.state.currentEntry}
+        translations={this.state.translations}
+        locale={this.state.locale}
+        />,
+      "scan": <ScanPage 
+        mcmmId={this.state.mcmmId} setUserFilter={this.setUserFilter}
+        translations={this.state.translations}
+        locale={this.state.locale}
+      />,
+      "page": <StaticPage
+        translations={this.state.translations}
+        locale={this.state.locale}
+        pageKey={this.state.pageKey}
+      />  
     }
     let mainContent = pages[this.state.currentPage];
     
@@ -132,7 +170,14 @@ class BaseContainer extends Component {
         <GlobalStyles key="globalstyles" />,
         <ReactResizeDetector key="resize" handleWidth handleHeight onResize={this.onResize} />,
         this.state.menuOpen ?
-        <Menu key="main" close={this.toggleMenu} navigate={this.navigate}/> 
+        <Menu 
+          key="main" 
+          close={this.toggleMenu} 
+          navigate={this.navigate}
+          translations={this.state.translations}
+          locale={this.state.locale}
+          setLocale={this.setLocale}
+        /> 
         : 
           <MainContent key="main">
             {!(this.state.userFilter.length > 0 || this.state.musicianFilter) && <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>}

@@ -70,6 +70,74 @@ module.exports = function (mongoose) {
       },
 
       extraEndpoints: [
+
+
+          /* get unique musicians and cities for autocomplete 
+
+
+              
+          */
+
+         function (server, model, options, logger) {
+            const Log = logger.bind("get unique musicians and cities")
+            let Boom = require('boom')
+
+            let handler = async function (request, h) {
+              try {
+
+                
+                let musicians = await model.find({
+                    isDeleted: {$ne: true},
+                }).distinct('musician');
+
+                musicians.sort(function (a, b) {
+                  return a.toLowerCase().localeCompare(b.toLowerCase());
+                });
+
+                let cities = await model.find({
+                    isDeleted: {$ne: true},
+                }).distinct('city');
+
+                cities.sort(function (a, b) {
+                  return a.toLowerCase().localeCompare(b.toLowerCase());
+                });
+
+                return h.response({musicians, cities});
+                
+              } catch(err) {
+                if (!err.isBoom) {
+                  Log.error(err)
+                  throw Boom.badImplementation(err)
+                } else {
+                  throw err
+                }
+              }
+            }
+
+            server.route({
+              method: 'GET',
+              path: '/entry_uniques/',
+              config: {
+                handler: handler,
+                auth: false,
+                description: 'get unique musicians and cities',
+                tags: ['api'],
+                validate: {
+                },
+                plugins: {
+                  'hapi-swagger': {
+                    responseMessages: [
+                      {code: 200, message: 'Success'},
+                      {code: 400, message: 'Bad Request'},
+                      {code: 404, message: 'Not Found'},
+                      {code: 500, message: 'Internal Server Error'}
+                    ]
+                  }
+                }
+              }
+            })
+          },
+
                     
           /* get distribution of years
 

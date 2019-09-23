@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { apiUrl } from '../helpers'
 
+import { t } from '../helpers'
+
 import styled from 'styled-components'
 
 import MapComponent from './MapComponent.js';
@@ -36,7 +38,7 @@ class ListPage extends Component {
       </ListItem>);
     return (
       <Container>
-        <h1>my entries</h1>
+        <h1>{t(this.props.translations, "my_entries", this.props.locale)}</h1>
         <List>{entries}</List>
         <p>This is your secret edit link: <a href={"#"+this.props.mcmmId}>{"#"+this.props.mcmmId}</a></p>
         <p>Bookmark it to manage your entries later or from other devices. If you lose it, you might lose access to your entries.</p>
