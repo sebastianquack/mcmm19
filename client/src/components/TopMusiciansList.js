@@ -20,11 +20,20 @@ class TopMusiciansList extends Component {
   }
 
   fetchData() {
-    console.log("request with yearFilter", this.props.yearFilter);
-    axios.get(apiUrl + "/top_musicians/10/" 
-      + (this.props.musicianFilter ? "?musician=" + this.props.musicianFilter : "")
-      + (this.props.yearFilter ? "?year=" + this.props.yearFilter : "")
-      )
+    console.log(this.props);
+    let params = {}
+
+    if(this.props.musicianFilter) {
+      params.musician = this.props.musicianFilter;
+    }
+    if(this.props.userFilter && this.props.userFilter.length > 0) {
+      params.userIds = JSON.stringify(this.props.userFilter);
+    }
+    if(this.props.yearFilter) {
+      params.year = this.props.yearFilter;
+    }
+
+    axios.get(apiUrl + "/top_musicians/10/", {params})
     .then((response)=> {
       console.log(response.data);
       this.setState({ musicians: response.data })    

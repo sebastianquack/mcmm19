@@ -27,6 +27,7 @@ class HomePage extends Component {
         { this.props.largeScreen &&
           <TopMusiciansList 
             musicianFilter={this.props.musicianFilter}
+            userFilter={this.props.userFilter}
             setMusicianFilter={this.props.setMusicianFilter}
             yearFilter={this.props.yearFilter}
             filterOn={showFilterBar}
