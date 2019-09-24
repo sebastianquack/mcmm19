@@ -57,7 +57,9 @@ class BaseContainer extends Component {
 
   setUserFilter(filter) {
     this.setState({
-      userFilter: filter
+      userFilter: filter,
+      musicianFilter: null,
+      yearFilter: null
     }, ()=>{
       if(this.state.currentPage != "home") {
         this.navigate("home");  

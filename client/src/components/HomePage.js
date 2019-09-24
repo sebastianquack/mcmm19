@@ -40,6 +40,7 @@ class HomePage extends Component {
             musicianFilter={this.props.musicianFilter}
             yearFilter={this.props.yearFilter}
             setYearFilter={this.props.setYearFilter}
+            userFilter={this.props.userFilter}
           />
         }
         

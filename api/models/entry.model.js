@@ -164,6 +164,12 @@ module.exports = function (mongoose) {
                   queryFilter = {user_id: {$in: user_ids}}
 
                 }
+
+                if(request.query.userIds) {
+
+                  queryFilter = {user_id: {$in: request.query.userIds}}                  
+
+                }
                 
                 let minYears = await model.find(queryFilter).sort({ "year": 1 }).limit(1)
                 let minYear = minYears[0].year;
@@ -204,7 +210,8 @@ module.exports = function (mongoose) {
                 tags: ['api'],
                 validate: {
                   query: {
-                    musician: Joi.string()
+                    musician: Joi.string(),
+                    userIds: Joi.array()
                   }
                 },
                 plugins: {
