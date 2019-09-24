@@ -20,6 +20,7 @@ class HomePage extends Component {
       <Container>
         <MapComponent 
           userFilter={this.props.userFilter} 
+          setUserFilter={this.props.setUserFilter}
           musicianFilter={this.props.musicianFilter}
           yearFilter={this.props.yearFilter}
         />

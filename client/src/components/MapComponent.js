@@ -5,6 +5,8 @@ import { apiUrl } from '../helpers'
 
 import styled from 'styled-components'
 
+import $ from 'jquery';
+
 const mapStyles = require('./GoogleMapStyles.json')
 const google = window.google;
 
@@ -13,6 +15,7 @@ class MapComponent extends Component {
   constructor(props) {
     super(props);
     this.mapContainerRef = React.createRef();
+    this.infoWindowRef = React.createRef();
     this.markers = [];
     this.lines = [];
     this.infoWindows = [];
@@ -97,7 +100,10 @@ class MapComponent extends Component {
         let content = firstEntry.city + "<br>";
         let musicians = "";
         this.state.entries[k].forEach((e) => {
-          content += e.musician + " " + e.year + "<br>" + (e.note ? '<em>"' + e.note + '"</em><br>' : '');
+          content += 
+            e.musician + " " + e.year + "<br>" + (e.note ? '<em>"' + e.note + '"</em><br>' : '') 
+            + "<span class='info-window-span' rel='"+e.user_id+"'>zur Biografie</span>";
+          
           musicians += e.musician + " ";
         });
         
@@ -115,6 +121,14 @@ class MapComponent extends Component {
 
         let infoWindow = new google.maps.InfoWindow({
           content: content
+        });
+
+        google.maps.event.addListener(infoWindow, 'domready', ()=> {
+          $('.info-window-span').off();
+          $('.info-window-span').click((e)=>{
+            let user_id = $(e.target).attr("rel");
+            this.props.setUserFilter([user_id]);
+          });
         });
 
         marker.addListener('click', ()=> {
