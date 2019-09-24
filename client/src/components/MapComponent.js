@@ -78,7 +78,7 @@ class MapComponent extends Component {
 
   drawMap() {
 
-      let filterMode = (this.props.musicianFilter || (this.props.userFilter && this.props.userFilter.length > 0));
+      let filterMode = (this.props.musicianFilter || (this.props.userFilter && this.props.userFilter.length > 0) || this.props.yearFilter);
     
       const icon = {
         url: "/images/marker.svg", // url
