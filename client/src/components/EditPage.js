@@ -186,6 +186,8 @@ export default EditPage;
 
 const Container = styled.div`
   padding: 4rem 1rem 2rem 1rem;
+  overflow-y: scroll;
+  height: 100%;
 `
 
 const Label = styled.label`
@@ -222,6 +224,8 @@ const Form = styled.form`
     height: 100px;
     font-size: 150%;
   }
+
+  margin-bottom: 2rem;
 `
 const Button = styled.div`
   width: 100%;

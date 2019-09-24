@@ -14,30 +14,14 @@ class ScanPage extends Component {
       this.state = {
         result: 'No result'
     }
-
-    this.pollFilter = this.pollFilter.bind(this);
-
   }
 
   componentDidMount() {
-    this.pollInterval = setInterval(this.pollFilter, 5000);
+    this.pollInterval = setInterval(()=>{this.props.pollFilter(this.props.mcmmId)}, 5000);
   }
 
   componentWillUnmount() {
     clearInterval(this.pollInterval);
-  }
-
-  pollFilter() {
-    axios.get(apiUrl + "/filter?username=" + this.props.mcmmId)
-    .then((response)=> {
-      console.log(response);
-      if(response.data && response.data.docs && response.data.docs.length) {
-        this.props.setUserFilter([this.props.mcmmId, response.data.docs]);  
-      }
-    })
-    .catch((e)=> {
-      console.log(e);
-    });
   }
 
   handleScan = data => {
@@ -46,9 +30,13 @@ class ScanPage extends Component {
         result: data
       })
 
-      this.props.setUserFilter([this.props.mcmmId, data]);
+      if (data.substring(0, 4) == "pro_") {
+        this.props.setUserFilter([this.props.mcmmId]);
+      } else {
+        this.props.setUserFilter([this.props.mcmmId, data]);
+      }
 
-      axios.post(apiUrl + "/set_filter/" + data + "/" + this.props.mcmmId)
+      axios.get(apiUrl + "/set_filter/" + data + "/" + this.props.mcmmId)
       .then((response)=> {
         console.log(response);
       })

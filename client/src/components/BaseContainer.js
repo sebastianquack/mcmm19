@@ -30,12 +30,15 @@ class BaseContainer extends Component {
       userFilter: [],
       musicianFilter: null,
       translations: [],
-      locale: "de"
+      locale: "de",
+      projectionId: null
     }
 
     this.setUserFilter = this.setUserFilter.bind(this);
     this.setMusicianFilter = this.setMusicianFilter.bind(this);
     this.setLocale = this.setLocale.bind(this);
+    this.pollFilter = this.pollFilter.bind(this);
+    this.handleFilterClose = this.handleFilterClose.bind(this);
   }
 
   onResize = (width, height) => {
@@ -53,7 +56,9 @@ class BaseContainer extends Component {
     this.setState({
       userFilter: filter
     }, ()=>{
-      this.navigate("home");
+      if(this.state.currentPage != "home") {
+        this.navigate("home");  
+      }
     });
   }
 
@@ -64,30 +69,81 @@ class BaseContainer extends Component {
     })
   }
 
+  pollFilter(id) {
+    axios.get(apiUrl + "/filter?username=" + id)
+    .then((response)=> {
+      console.log(response);
+      if(response.data && response.data.docs && response.data.docs.length) {
+        let ids = this.state.projectionId ? [] : [id];
+        response.data.docs[0].filter.forEach(filterId=>{ids.push(filterId)});
+        this.setUserFilter(ids);  
+      }
+    })
+    .catch((e)=> {
+      console.log(e);
+    });
+  }
+
+  handleFilterClose() {
+
+    console.log("handleFilterClose");
+
+    axios.get(apiUrl + "/remove_filter/" + (this.state.projectionId ? this.state.projectionId : this.state.mcmmId))
+    .then((response)=> {
+      console.log(response);
+    })
+    .catch((e)=> {
+      console.log(e);
+    });
+
+    this.setUserFilter([]);
+    this.setMusicianFilter(null)
+  }
+
+
   async componentDidMount() {
     disableBodyScroll(document.querySelector('body'))
-    let hash = window.location.hash;
-    let mcmmId = localStorage.getItem('mcmmId');  
-    if(hash) {
-      mcmmId = hash.substr(1);
+
+    let queryParams = new URLSearchParams(window.location.search); 
+    let projection_id = queryParams.get("projection_id");
+    
+    if(projection_id) {
+
       this.setState({
-        currentPage: "list",
-        mcmmId: mcmmId,
-        navStack: ["home"]
-      })
+        projectionId: projection_id
+      });
+
+      // start polling for filter
+      this.pollInterval = setInterval(()=>{this.pollFilter(projection_id)}, 5000);
+      
+    } else {
+
+      let hash = window.location.hash;
+      let mcmmId = localStorage.getItem('mcmmId');  
+      if(hash) {
+        mcmmId = hash.substr(1);
+        this.setState({
+          currentPage: "list",
+          mcmmId: mcmmId,
+          navStack: ["home"]
+        })
+      }
+      if(!mcmmId) {
+        mcmmId = uuidv1();
+      }
+      this.setState({mcmmId: mcmmId});  
+      localStorage.setItem('mcmmId', mcmmId);    
+  
     }
-    if(!mcmmId) {
-      mcmmId = uuidv1();
-    }
-    this.setState({mcmmId: mcmmId});  
-    localStorage.setItem('mcmmId', mcmmId);    
   
     let response = await axios.get(apiUrl + "/translation");
     console.log(response);
     this.setState({translations: response.data.docs});
-
   }
 
+  componentWillUnmount() {
+    clearInterval(this.pollInterval);
+  }
 
   toggleMenu = ()=>{
     this.setState({menuOpen: !this.state.menuOpen})
@@ -107,7 +163,8 @@ class BaseContainer extends Component {
       pageKey: entry
     });
     if(page != "list") {
-      window.history.pushState("", document.title, window.location.pathname);
+      let pathName = window.location.pathname + (this.state.projectionId ? "?projection_id=" + this.state.projectionId : "")
+      window.history.pushState("", document.title, pathName);
     }
   }
 
@@ -156,6 +213,7 @@ class BaseContainer extends Component {
         mcmmId={this.state.mcmmId} setUserFilter={this.setUserFilter}
         translations={this.state.translations}
         locale={this.state.locale}
+        pollFilter={this.pollFilter}
       />,
       "page": <StaticPage
         translations={this.state.translations}
@@ -177,10 +235,22 @@ class BaseContainer extends Component {
           translations={this.state.translations}
           locale={this.state.locale}
           setLocale={this.setLocale}
+          reset={this.reset}
+          projectionMode={this.state.projectionId ? true : false}
         /> 
         : 
           <MainContent key="main">
-            {!(this.state.userFilter.length > 0 || this.state.musicianFilter) && <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>}
+            {!showFilterBar && <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>}
+            
+            {showFilterBar && 
+              <UserFilterInfo>
+                {(this.state.userFilter.length > 0) && <span>filter for {this.state.userFilter.length} users</span>}
+                {(this.state.musicianFilter) && <span>filter for users that named {this.state.musicianFilter}</span>}
+
+                <ExitButton src="/images/close.png" onClick={this.handleFilterClose}/>
+              </UserFilterInfo>
+            }
+
             {mainContent}
             {(this.state.currentPage === "home" && !showFilterBar || this.state.currentPage == "list") && 
               <AddButton onClick={()=>this.navigate("edit")} largeScreen={this.state.largeScreen}>
@@ -229,6 +299,11 @@ const AddButton = styled.div`
   background-color: white;
   padding: 10px;
   &:hover {cursor: pointer}; 
+`
+
+const UserFilterInfo = styled.div`
+  min-height: 60px;
+  padding: 20px;
 `
 
 const ExitButton = styled.img`

@@ -59,7 +59,7 @@ module.exports = function(mongoose) {
             }
 
             server.route({
-              method: 'POST',
+              method: 'GET',
               path: '/set_filter/{target}/{source}',
               config: {
                 handler: handler,
@@ -114,7 +114,7 @@ module.exports = function(mongoose) {
             }
 
             server.route({
-              method: 'POST',
+              method: 'GET',
               path: '/remove_filter/{username}',
               config: {
                 handler: handler,
