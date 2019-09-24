@@ -67,7 +67,7 @@ const Container = styled.div`
   position: fixed;
   right: 0;
   top: ${props => props.filterOn ? "60px" : "0" };
-  width: 33vw;
+  width: auto;
   padding: 1rem 1rem 0 0;
   box-sizing: border-box;
 
