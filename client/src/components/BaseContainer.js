@@ -12,7 +12,7 @@ import ScanPage from './ScanPage.js';
 import StaticPage from './StaticPage.js';
 
 import axios from 'axios';
-import { apiUrl } from '../helpers'
+import { apiUrl, capitalize } from '../helpers'
 
 import { isLargeScreen } from '../helpers/'
 import styled from 'styled-components'
@@ -263,7 +263,7 @@ class BaseContainer extends Component {
             {showFilterBar && 
               <UserFilterInfo>
                 {(this.state.userFilter.length > 0) && <span>filter for {this.state.userFilter.length} users</span>}
-                {(this.state.musicianFilter) && <span>filter for users that named {this.state.musicianFilter}</span>}
+                {(this.state.musicianFilter) && <span>filter for users that named {capitalize(this.state.musicianFilter)}</span>}
                 {(this.state.yearFilter) && <span>filter for entries from {this.state.yearFilter}</span>}
 
                 <ExitButton src="/images/close.png" onClick={this.handleFilterClose}/>

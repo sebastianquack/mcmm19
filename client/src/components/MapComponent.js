@@ -5,6 +5,8 @@ import { apiUrl } from '../helpers'
 
 import styled from 'styled-components'
 
+import { capitalize } from '../helpers'
+
 import $ from 'jquery';
 
 const mapStyles = require('./GoogleMapStyles.json')
@@ -97,14 +99,14 @@ class MapComponent extends Component {
         let firstEntry = this.state.entries[k][0];
 
         // assemble content
-        let content = firstEntry.city + "<br>";
+        let content = capitalize(firstEntry.city) + "<br>";
         let musicians = "";
         this.state.entries[k].forEach((e) => {
           content += 
-            e.musician + " " + e.year + "<br>" + (e.note ? '<em>"' + e.note + '"</em><br>' : '') 
+            capitalize(e.musician) + " " + e.year + "<br>" + (e.note ? '<em>"' + e.note + '"</em><br>' : '') 
             + "<span class='info-window-span' rel='"+e.user_id+"'>zur Biografie</span>";
           
-          musicians += e.musician + " ";
+          musicians += capitalize(e.musician) + " ";
         });
         
         // add markers for user
@@ -207,6 +209,14 @@ const MapContainer = styled.div`
   height: 100%;
   visibility: ${props => props.visible != false ? "visible" : "hidden"};
 
+  span.info-window-span {
+    :hover { 
+      cursor: pointer; 
+      text-decoration: underline;
+    }
+
+  }
+
   .gm-style .gm-style-iw-t::after {
     /* popup triangle */
     /* background: linear-gradient(45deg,rgba(0,0,0,1) 50%,rgba(0,0,0,,0) 51%,rgba(0,0,0,0,0) 100%); */
@@ -216,7 +226,7 @@ const MapContainer = styled.div`
   .gm-style button {
     display: none;
 
-    background-image: url("/images/closeWhite.png") !important;
+    /*background-image: url("/images/closeWhite.png") !important;
     background-size: cover !important;
     top: 0.25rem !important;
     right: 0.25rem !important;
@@ -227,7 +237,7 @@ const MapContainer = styled.div`
 
     img {
       visibility: hidden;
-    }
+    }*/
   }
 
   .gm-style-iw-d {
@@ -235,6 +245,7 @@ const MapContainer = styled.div`
   }
 
   .gm-style .gm-style-iw-c {
+    max-width: 250px !important;
     border-radius: 0;
     overflow-x: hidden;
     overflow-y: auto;

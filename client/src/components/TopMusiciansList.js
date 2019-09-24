@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { apiUrl } from '../helpers'
 
+import { capitalize } from '../helpers'
 import styled from 'styled-components'
 
 class TopMusiciansList extends Component {
@@ -58,8 +59,7 @@ class TopMusiciansList extends Component {
       .map((e, i)=> 
         <li key={i} onClick={ () => this.props.setMusicianFilter(e.name) }>
           <span>{e.percent}%</span>
-          &nbsp;
-          <span>{e.name}&nbsp;({e.count})</span>
+          <span>{capitalize(e.name)}&nbsp;({e.count})</span>
         </li>)
 
     return (
@@ -87,6 +87,7 @@ const Container = styled.div`
     display: flex;
     span:first-child {
       width: 2em;
+      margin-right: 0.75em;
     }
     span:last-child {
       flex: 1;

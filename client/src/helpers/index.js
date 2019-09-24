@@ -13,3 +13,7 @@ export function t(translations, key, locale) {
   }
   return "["+ key + "]";
 }
+
+export function capitalize(s) {
+    return s.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
+}

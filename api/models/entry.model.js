@@ -56,6 +56,8 @@ module.exports = function (mongoose) {
 
       create: {
         pre: async function (payload, request, Log) {
+          payload.musician = payload.musician.toLowerCase();
+          payload.city = payload.city.toLowerCase();
           if(!payload.cityLocation)
             payload = await addCityLocation(payload);
           return payload;
@@ -64,6 +66,8 @@ module.exports = function (mongoose) {
 
       update: {
         pre: async function (_id, payload, request, Log) {
+          payload.musician = payload.musician.toLowerCase();
+          payload.city = payload.city.toLowerCase();
           payload = await addCityLocation(payload);
           return payload;
         }
