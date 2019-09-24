@@ -97,7 +97,7 @@ class MapComponent extends Component {
         let content = firstEntry.city + "<br>";
         let musicians = "";
         this.state.entries[k].forEach((e) => {
-          content += e.musician + " " + e.year + "<br>";
+          content += e.musician + " " + e.year + "<br>" + (e.note ? '<em>"' + e.note + '"</em><br>' : '');
           musicians += e.musician + " ";
         });
         
@@ -200,6 +200,8 @@ const MapContainer = styled.div`
   }
 
   .gm-style button {
+    display: none;
+
     background-image: url("/images/closeWhite.png") !important;
     background-size: cover !important;
     top: 0.25rem !important;
