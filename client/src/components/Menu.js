@@ -48,7 +48,8 @@ class Menu extends Component {
 
   render() {
     return (
-      <MenuContainer>
+      [<MenuShadow onClick={this.props.close} menuOpen={this.props.menuOpen}/>,
+      <MenuContainer menuOpen={this.props.menuOpen}>
         <MenuButton onClick={this.props.reset}>{t(this.props.translations, "home", this.props.locale)}</MenuButton>
         <MenuButton onClick={()=>this.props.navigate("page", "programm")}>{t(this.props.translations, "programm", this.props.locale)}</MenuButton>
         {!this.props.projectionMode && <MenuButton onClick={()=>this.props.navigate("list")}>{t(this.props.translations, "my_entries", this.props.locale)}</MenuButton>}
@@ -62,7 +63,7 @@ class Menu extends Component {
         />
 
         <ExitButton src="/images/close.png"  onClick={this.props.close}/>
-      </MenuContainer>
+      </MenuContainer>]
     );
   }
 }
@@ -75,7 +76,7 @@ const MenuButton = styled.li`
 `
 
 const ExitButton = styled.img`
-  position: fixed;
+  position: absolute;
   top: 1rem;
   right: 1rem;
   width: 30px;
@@ -85,4 +86,26 @@ const ExitButton = styled.img`
 
 const MenuContainer = styled.ul`
   padding: 4rem 1rem 1rem 2rem;
+  width: 50%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: ${ props => (props.menuOpen ? "visibile" : "hidden") };
+  z-index: 300;
+  background-color: white;
+
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+  }
+`
+
+const MenuShadow = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  opacity: 0.5;
+  z-index: 300;
+  display: ${ props => (props.menuOpen ? "block" : "none") };
 `

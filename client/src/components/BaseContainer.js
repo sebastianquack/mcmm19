@@ -245,8 +245,8 @@ class BaseContainer extends Component {
       [
         <GlobalStyles key="globalstyles" />,
         <ReactResizeDetector key="resize" handleWidth handleHeight onResize={this.onResize} />,
-        this.state.menuOpen ?
         <Menu 
+          menuOpen={this.state.menuOpen}
           key="main" 
           close={this.toggleMenu} 
           navigate={this.navigate}
@@ -255,8 +255,7 @@ class BaseContainer extends Component {
           setLocale={this.setLocale}
           reset={this.reset}
           projectionMode={this.state.projectionId ? true : false}
-        /> 
-        : 
+        />, 
           <MainContent key="main">
             {!showFilterBar && <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>}
             
