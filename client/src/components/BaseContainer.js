@@ -217,6 +217,7 @@ class BaseContainer extends Component {
         mcmmId={this.state.mcmmId} editEntry={(entry)=>{this.navigate("edit", entry)}}
         translations={this.state.translations}
         locale={this.state.locale}
+        setUserFilter={this.setUserFilter}
         />,
       "edit": <EditPage 
         mcmmId={this.state.mcmmId} back={this.back} 

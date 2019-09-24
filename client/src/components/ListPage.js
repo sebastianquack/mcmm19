@@ -44,12 +44,22 @@ class ListPage extends Component {
         <p>Bookmark it to manage your entries later or from other devices. If you lose it, you might lose access to your entries.</p>
       
         {/*<MapComponent entries={[{entries: this.state.entries}]}/>*/}
+        <p><ShowMyEntriesButton onClick={()=>{this.props.setUserFilter([this.props.mcmmId])}}>
+          {t(this.props.translations, "show_my_entries", this.props.locale)}
+        </ShowMyEntriesButton></p>
       </Container>
     );
   }
 }
 
 export default ListPage;
+
+const ShowMyEntriesButton = styled.span`
+  :hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+`
 
 const Container = styled.div`
   padding: 4rem 1rem 2rem 1rem;
