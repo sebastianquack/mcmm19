@@ -34,6 +34,9 @@ class MapComponent extends Component {
     if(this.props.userFilter && this.props.userFilter.length > 0) {
       params.userIds = JSON.stringify(this.props.userFilter);
     }
+    if(this.props.yearFilter) {
+      params.year = this.props.yearFilter;
+    }
 
     axios.get(apiUrl + "/map_entries/", {params})
       .then((response)=> {
@@ -61,7 +64,9 @@ class MapComponent extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if(this.props.musicianFilter !== prevProps.musicianFilter || this.props.userFilter !== prevProps.userFilter) {
+    if(this.props.musicianFilter !== prevProps.musicianFilter || 
+      this.props.userFilter !== prevProps.userFilter ||
+      this.props.yearFilter !== prevProps.yearFilter) {
       this.markers.forEach(m=>{
         m.setMap(null);
       });

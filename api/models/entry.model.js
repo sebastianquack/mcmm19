@@ -223,8 +223,8 @@ module.exports = function (mongoose) {
 
 
           /* get top musicians
-
-
+              - filter by musician
+              - filter by user_ids
           */
 
           function (server, model, options, logger) {
@@ -238,36 +238,118 @@ module.exports = function (mongoose) {
 
                 let data = [];
                 let musicians = [];
-                let totalEntriesCount = await model.find({isDeleted: {$ne: true}}).count();
+                let musician_user_ids = [];
 
+                let totalEntriesCount = 0;
+
+                // manage filters
                 if(!request.query.musician) {
 
                   if(!request.query.userIds) {
-                    musicians = await model.find({isDeleted: {$ne: true}}).distinct('musician');
+
+                    // year filter
+                    if(request.query.year) {
+                      musicians = await model.find({
+                        isDeleted: {$ne: true},
+                        year: request.query.year
+                      }).distinct('musician');  
+
+                      // all entries with that year
+                      totalEntriesCount = await model.find({year: request.query.year, isDeleted: {$ne: true}}).count();
+                    
+                    // no filter
+                    } else {
+                      musicians = await model.find({isDeleted: {$ne: true}}).distinct('musician');  
+                      
+                      // all entries
+                      totalEntriesCount = await model.find({isDeleted: {$ne: true}}).count();
+                    }
+
                   } else {
+
+                    // user filter
                     musicians = await model.find({
                       isDeleted: {$ne: true},
                       user_id: {$in: request.query.userIds}
                     }).distinct('musician');
+                  
+                    // all entries from these users
+                    totalEntriesCount = await model.find({
+                      isDeleted: {$ne: true},
+                      user_id: {$in: request.query.userIds}
+                    }).count();
+
                   }
 
                 } else {
 
-                  let user_ids = await model.find({
+                  // musician filter
+                  musician_user_ids = await model.find({
                       isDeleted: {$ne: true},
                       musician: request.query.musician
                     }).distinct('user_id');
 
+                  console.log(musician_user_ids);
+
                   musicians = await model.find({
                       isDeleted: {$ne: true},
-                      user_id: {$in: user_ids}
-                  }).distinct('musician'); 
+                      user_id: {$in: musician_user_ids}
+                  }).distinct('musician');
+
+                  console.log(musicians);
+
+                  // all entries of users who named this musician
+                  totalEntriesCount = await model.find({
+                    isDeleted: {$ne: true},
+                    user_id: {$in: musician_user_ids}
+                  }).count();
+
+                  console.log(totalEntriesCount);
 
                 }
 
+                // now we have all musicians we want
                 for(let i = 0; i < musicians.length; i++) {
                   let musician = musicians[i];
-                  let count = await model.find({musician: musician}).count();
+                  
+                  let count = 0;
+                  if(request.query.year) {
+                    // year
+                    // all entries with this musician and this year
+                    count = await model.find({musician: musician, year: request.query.year}).count();
+                  } else {
+
+                    // user filter
+                    if(request.query.userIds) {
+                      // all entries from these users
+                      count = await model.find({
+                        isDeleted: {$ne: true},
+                        musician: musician,
+                        user_id: {$in: request.query.userIds}
+                      }).count();
+  
+                    } else {
+
+                      // musician filter
+                      if(request.query.musician) {
+                        // all entries of users who named this musician
+                        count = await model.find({
+                          isDeleted: {$ne: true},
+                          musician: musician,
+                          user_id: {$in: musician_user_ids}
+                        }).count();
+
+                      } else {
+
+                        // no filter
+                        // all entries of this musician
+                        count = await model.find({musician: musician}).count();
+                      }
+
+                    }
+                    
+                  }
+                  
                   data.push({
                     name: musician,
                     id: musician,
@@ -307,7 +389,8 @@ module.exports = function (mongoose) {
                   },
                   query: {
                     userIds: Joi.array(),
-                    musician: Joi.string()
+                    musician: Joi.string(),
+                    year: Joi.string()
                   }
                 },
                 plugins: {
@@ -329,6 +412,7 @@ module.exports = function (mongoose) {
               - group by city
               - filter by musician
               - filter by user_ids
+              - filter by year
           */
 
           function (server, model, options, logger) {
@@ -341,37 +425,57 @@ module.exports = function (mongoose) {
                 let result = {};
                 let users = [];
 
-                if(request.query.musician) {
-                  users = await model.find({
-                    musician: request.query.musician,
-                    isDeleted: {$ne: true},
-                  }).distinct('user_id');
-                } else {
-                  if(request.query.userIds) {
-                    console.log("userIds", request.query.userIds);
-                    users = request.query.userIds;
-                  } else {
-                    users = await model.find({
-                      isDeleted: {$ne: true},
-                    }).distinct('user_id');
-                  }
-                }
-
-                for(let i = 0; i < users.length; i++) {
-                  let u = users[i];
+                // manage filters
+                if(request.query.year) {
+                  
                   let entries = await model.find({
-                    user_id: u,
-                    isDeleted: {$ne: true},
+                      year: request.query.year,
+                      isDeleted: {$ne: true},
                   });
 
                   if(entries.length) {
-
                     entries.forEach(e=>{
                       if(!result[e.city]) {
                         result[e.city] = [];
                       }
                       result[e.city].push(e);
                     })
+                  }
+
+                } else {
+                
+                  if(request.query.musician) {
+                    users = await model.find({
+                      musician: request.query.musician,
+                      isDeleted: {$ne: true},
+                    }).distinct('user_id');
+                  } else {
+                    if(request.query.userIds) {
+                      console.log("userIds", request.query.userIds);
+                      users = request.query.userIds;
+                    } else {
+                      users = await model.find({
+                        isDeleted: {$ne: true},
+                      }).distinct('user_id');
+                    }
+                  }
+
+                  for(let i = 0; i < users.length; i++) {
+                    let u = users[i];
+                    let entries = await model.find({
+                      user_id: u,
+                      isDeleted: {$ne: true},
+                    });
+
+                    if(entries.length) {
+
+                      entries.forEach(e=>{
+                        if(!result[e.city]) {
+                          result[e.city] = [];
+                        }
+                        result[e.city].push(e);
+                      })
+                    }
                   }
                 }
 
@@ -398,7 +502,8 @@ module.exports = function (mongoose) {
                 validate: {
                   query: {
                     userIds: Joi.array(),
-                    musician: Joi.string()
+                    musician: Joi.string(),
+                    year: Joi.number()
                   }
                 },
                 plugins: {

@@ -29,6 +29,7 @@ class BaseContainer extends Component {
       navStack: [],
       userFilter: [],
       musicianFilter: null,
+      yearFilter: null,
       translations: [],
       locale: "de",
       projectionId: null
@@ -36,9 +37,11 @@ class BaseContainer extends Component {
 
     this.setUserFilter = this.setUserFilter.bind(this);
     this.setMusicianFilter = this.setMusicianFilter.bind(this);
+    this.setYearFilter = this.setYearFilter.bind(this);
     this.setLocale = this.setLocale.bind(this);
     this.pollFilter = this.pollFilter.bind(this);
     this.handleFilterClose = this.handleFilterClose.bind(this);
+
   }
 
   onResize = (width, height) => {
@@ -65,7 +68,16 @@ class BaseContainer extends Component {
   setMusicianFilter(musician) {
     this.setState({
       musicianFilter: musician,
-      userFilter: []
+      userFilter: [],
+      yearFilter: null
+    })
+  }
+
+  setYearFilter(year) {
+    this.setState({
+      musicianFilter: null,
+      userFilter: [],
+      yearFilter: year
     })
   }
 
@@ -97,7 +109,8 @@ class BaseContainer extends Component {
     });
 
     this.setUserFilter([]);
-    this.setMusicianFilter(null)
+    this.setMusicianFilter(null);
+    this.setYearFilter(null);
   }
 
 
@@ -186,7 +199,7 @@ class BaseContainer extends Component {
   }
 
   render() {
-    const showFilterBar = (this.state.userFilter.length > 0 || this.state.musicianFilter)
+    const showFilterBar = (this.state.userFilter.length > 0 || this.state.musicianFilter || this.state.yearFilter)
 
     const pages = {
       "home": <HomePage mcmmId={this.state.mcmmId} 
@@ -194,6 +207,8 @@ class BaseContainer extends Component {
         setUserFilter={this.setUserFilter}
         musicianFilter={this.state.musicianFilter}
         setMusicianFilter={this.setMusicianFilter}
+        yearFilter={this.state.yearFilter}
+        setYearFilter={this.setYearFilter}
         largeScreen={this.state.largeScreen}
         translations={this.state.translations}
         locale={this.state.locale}
@@ -246,6 +261,7 @@ class BaseContainer extends Component {
               <UserFilterInfo>
                 {(this.state.userFilter.length > 0) && <span>filter for {this.state.userFilter.length} users</span>}
                 {(this.state.musicianFilter) && <span>filter for users that named {this.state.musicianFilter}</span>}
+                {(this.state.yearFilter) && <span>filter for entries from {this.state.yearFilter}</span>}
 
                 <ExitButton src="/images/close.png" onClick={this.handleFilterClose}/>
               </UserFilterInfo>

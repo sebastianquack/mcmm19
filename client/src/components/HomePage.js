@@ -14,22 +14,31 @@ class HomePage extends Component {
   }
   
   render() {
-    const showFilterBar = (this.props.userFilter.length > 0 || this.props.musicianFilter)
+    const showFilterBar = (this.props.userFilter.length > 0 || this.props.musicianFilter || this.props.yearFilter)
 
     return (
       <Container>
-        <MapComponent userFilter={this.props.userFilter} musicianFilter={this.props.musicianFilter}/>
+        <MapComponent 
+          userFilter={this.props.userFilter} 
+          musicianFilter={this.props.musicianFilter}
+          yearFilter={this.props.yearFilter}
+        />
         
         { this.props.largeScreen &&
           <TopMusiciansList 
             musicianFilter={this.props.musicianFilter}
             setMusicianFilter={this.props.setMusicianFilter}
+            yearFilter={this.props.yearFilter}
             filterOn={showFilterBar}
           />
         }
 
-        { this.props.largeScreen &&
-          <LineGraph musicianFilter={this.props.musicianFilter}/>
+        { this.props.largeScreen && !this.props.yearFilter &&
+          <LineGraph 
+            musicianFilter={this.props.musicianFilter}
+            yearFilter={this.props.yearFilter}
+            setYearFilter={this.props.setYearFilter}
+          />
         }
         
       </Container>

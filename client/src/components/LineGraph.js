@@ -46,9 +46,9 @@ export default class LineGraph extends PureComponent {
       </span>
       <span className="year_middle"></span>
       <span className="year_bottom">
-        <span>
+        <YearButton onClick={()=>{this.props.setYearFilter(year)}}>
           { amount > 0 ? year : null }
-        </span>  
+        </YearButton>  
       </span>
     </li>
   }
@@ -80,6 +80,13 @@ export default class LineGraph extends PureComponent {
     </Ol>;
   }
 }
+
+const YearButton = styled.span`
+  :hover { 
+    cursor: pointer 
+    text-decoration: underline;
+  };
+`
 
 const Ol = styled.ol`
   position: fixed;
