@@ -1,4 +1,4 @@
-/* please use styled-components and GlobalStyles in BaseContainer */
+/* please use styled-components */
 
 @font-face {
   font-family: NeutraText;
@@ -11,8 +11,42 @@
   [font-style: <style>];*/
 }
 
+@font-face {
+  font-family: NeutraTextLight;
+  src:  url('/fonts/NeutraText-Light.otf');
+  /*[unicode-range: <urange>#;]?
+  [font-variant: <font-variant>;]?
+  [font-feature-settings: normal|<feature-tag-value>#;]?
+  [font-stretch: <font-stretch>;]?
+  [font-weight: <weight>];
+  [font-style: <style>];*/
+}
+
+@font-face {
+  font-family: NeutraTextLightItalic;
+  src:  url('/fonts/NeutraText-LightItalic.otf');
+  /*[unicode-range: <urange>#;]?
+  [font-variant: <font-variant>;]?
+  [font-feature-settings: normal|<feature-tag-value>#;]?
+  [font-stretch: <font-stretch>;]?
+  [font-weight: <weight>];
+  [font-style: <style>];*/
+}
+
+@font-face {
+  font-family: NeutraTextDemi;
+  src:  url('/fonts/NeutraText-Demi.otf');
+  /*[unicode-range: <urange>#;]?
+  [font-variant: <font-variant>;]?
+  [font-feature-settings: normal|<feature-tag-value>#;]?
+  [font-stretch: <font-stretch>;]?
+  [font-weight: <weight>];
+  [font-style: <style>];*/
+}
+
 html, body, #root {
   height: 100%;
   width: 100%;
   font-family: NeutraText, sans-serif;
+  line-height: 1.15;
 }

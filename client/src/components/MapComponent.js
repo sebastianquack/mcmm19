@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { apiUrl } from '../helpers'
 
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 
 import { capitalize } from '../helpers'
 
@@ -99,23 +99,49 @@ class MapComponent extends Component {
         let firstEntry = this.state.entries[k][0];
 
         // assemble content
-        let content = capitalize(firstEntry.city) + "<br>";
-        let musicians = "";
+        let content = `
+          <div class="info-window">
+          `
+        content += `
+            <span class="info-window-city">
+              ${capitalize(firstEntry.city)}
+            </span>
+          `
         this.state.entries[k].forEach((e) => {
-          content += 
-            capitalize(e.musician) + " " + e.year + "<br>" + (e.note ? '<em>"' + e.note + '"</em><br>' : '') 
-            + "<span class='info-window-span' rel='"+e.user_id+"'>zur Biografie</span>";
-          
-          musicians += capitalize(e.musician) + " ";
+          content += `
+            <div class="info-window-entry">
+              <span class="info-window-musician">
+                ${capitalize(e.musician)}
+              </span>
+              <span class="info-window-year">
+                ${e.year}
+              </span>
+              ${(e.note ? `
+                <em class="info-window-note">
+                  ${e.note}
+                </em>` : ''
+                )}
+              <span class='info-window-span' rel='${e.user_id}'>
+                zur Biografie
+              </span>
+            </div>
+          `
         });
+        content += `
+          </div>
+          `
         
         // add markers for user
+        const musicians = this.state.entries[k]
+          .map( e => e.musician )
+          .join(", ")
         let marker = new google.maps.Marker({
             position: firstEntry.cityLocation,
             icon: icon,
             label: filterMode ? {
               color: "#000",
-              fontSize: "14px",
+              fontSize: "1rem",
+              fontFamily: "NeutraText",
               text: musicians,
             } : undefined,
             map: this.map,
@@ -204,26 +230,93 @@ class MapComponent extends Component {
 
 export default MapComponent;
 
+const glowColor1 = "#444444"; //"#e60073";
+const glowColor2 = "#404040"; //"#ff4da6";
+
+const glow = keyframes` 
+from {
+  text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px ${glowColor1}, 0 0 40px ${glowColor1}, 0 0 50px ${glowColor1}, 0 0 60px ${glowColor1}, 0 0 70px ${glowColor1};
+}
+to {
+  text-shadow: 0 0 20px #fff, 0 0 30px ${glowColor2}, 0 0 40px ${glowColor2}, 0 0 50px ${glowColor2}, 0 0 60px ${glowColor2}, 0 0 70px ${glowColor2}, 0 0 80px ${glowColor2};
+}
+`
+
 const MapContainer = styled.div`
   width: 100%; 
   height: 100%;
   visibility: ${props => props.visible != false ? "visible" : "hidden"};
+  * {
+   font-family: NeutraText;
+   line-height: 1.15;
+   font-size: 1rem;
+  }
 
-  span.info-window-span {
-    :hover { 
-      cursor: pointer; 
-      text-decoration: underline;
+  .info-window {
+    /* content wrapper */
+
+    .info-window-entry {
+      /* entry wrapper */
+      border-top: 1px dashed white;
+      padding-top: 0.25rem;
     }
 
+    .info-window-musician {
+      padding-right: 0.25rem;
+    }    
+
+    .info-window-note {
+      /* user note */
+      display: block;
+      font-family: NeutraTextLightItalic;
+      font-size: 2rem;
+      line-height: 2rem;
+      word-break: break-all;
+      animation: ${glow} 1s ease-in-out infinite alternate;    
+    }
+
+    span.info-window-span {
+      /* biography link */
+      font-family: NeutraTextDemi;
+      display: block;
+      text-align: right;
+      pointer-events: all;
+      :hover { 
+        cursor: pointer; 
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .gm-style .gm-style-iw-c {
+    /* popup window */
+    pointer-events: none;
+    max-width: 250px !important;
+    border-radius: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: black;
+    color: white;
+    transform: translate(0%,-100%);
+    top: 1rem;
+    z-index: 10;
+
+    padding: 0.25rem 0.25rem 0.25rem 0.25rem !important;
+
+    &, *::after, *::before {
+      border: none;
+    }
   }
 
   .gm-style .gm-style-iw-t::after {
     /* popup triangle */
-    /* background: linear-gradient(45deg,rgba(0,0,0,1) 50%,rgba(0,0,0,,0) 51%,rgba(0,0,0,0,0) 100%); */
+    /* background: linear-gradient(45deg,rgba(0,0,0,1) 50%,rgba(0,0,0,0,0) 51%,rgba(0,0,0,0,0) 100%); */
     display: none;
   }
 
   .gm-style button {
+    /* popup close button */
+
     display: none;
 
     /*background-image: url("/images/closeWhite.png") !important;
@@ -244,21 +337,4 @@ const MapContainer = styled.div`
     overflow: hidden !important;
   }
 
-  .gm-style .gm-style-iw-c {
-    max-width: 250px !important;
-    border-radius: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-    background-color: black;
-    color: white;
-    transform: translate(0%,-100%);
-    top: 1rem;
-    z-index: 10;
-
-    padding: 1rem 0.25rem 0.25rem 0.25rem !important;
-
-    &, *::after, *::before {
-      border: none;
-    }
-  }
 `
