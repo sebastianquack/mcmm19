@@ -113,7 +113,6 @@ class EditPage extends Component {
   render() {
     return (
       <Container>
-        <h1>{this.state._id ? "update entry" : "new entry"}</h1>
         <Form>
           <Label>musician/composer/band</Label> 
           
@@ -154,7 +153,7 @@ class EditPage extends Component {
             value={this.state.city}
             onChange={(e) => this.setState({city: e.target.value, changed: true})}
             onSelect={(val) => this.setState({city: val, changed: true})}
-            wrapperStyle={{display: "block"}}
+            wrapperStyle={{display: "block", opacity: 1}}
             inputProps={{style: autocompleteInputStyle}}
           />
 
@@ -185,9 +184,7 @@ class EditPage extends Component {
 export default EditPage;
 
 const Container = styled.div`
-  padding: 4rem 1rem 2rem 1rem;
-  overflow-y: scroll;
-  height: 100%;
+  padding: 1.25rem;
 `
 
 const Label = styled.label`
@@ -223,6 +220,7 @@ const Form = styled.form`
   textarea {
     height: 100px;
     font-size: 150%;
+    font-family: NeutraTextLightItalic;
   }
 
   margin-bottom: 2rem;

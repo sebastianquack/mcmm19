@@ -10,6 +10,7 @@ import HomePage from './HomePage.js';
 import EditPage from './EditPage.js';
 import ScanPage from './ScanPage.js';
 import StaticPage from './StaticPage.js';
+import InfoBar from './InfoBar.js';
 
 import axios from 'axios';
 import { apiUrl, capitalize } from '../helpers'
@@ -45,7 +46,6 @@ class BaseContainer extends Component {
   }
 
   onResize = (width, height) => {
-    console.log(this.state.largeScreen)
     this.setState({
       largeScreen: isLargeScreen(width, height),
     })
@@ -226,23 +226,27 @@ class BaseContainer extends Component {
         translations={this.state.translations}
         locale={this.state.locale}
         setUserFilter={this.setUserFilter}
+        titleKey="my_entries"
         />,
       "edit": <EditPage 
         mcmmId={this.state.mcmmId} back={this.back} 
         entry={this.state.currentEntry}
         translations={this.state.translations}
         locale={this.state.locale}
+        titleKey={this.state.currentEntry ? "update entry" : "new entry"}
         />,
       "scan": <ScanPage 
         mcmmId={this.state.mcmmId} setUserFilter={this.setUserFilter}
         translations={this.state.translations}
         locale={this.state.locale}
         pollFilter={this.pollFilter}
+        titleKey="scanner"
       />,
       "page": <StaticPage
         translations={this.state.translations}
         locale={this.state.locale}
         pageKey={this.state.pageKey}
+        titleKey={this.state.pageKey + "_heading"}
       />  
     }
     let mainContent = pages["home"];
@@ -255,7 +259,7 @@ class BaseContainer extends Component {
         <ReactResizeDetector key="resize" handleWidth handleHeight onResize={this.onResize} />,
         <Menu 
           menuOpen={this.state.menuOpen}
-          key="main" 
+          key="menu" 
           close={this.toggleMenu} 
           navigate={this.navigate}
           translations={this.state.translations}
@@ -265,31 +269,29 @@ class BaseContainer extends Component {
           projectionMode={this.state.projectionId ? true : false}
           render={page}
         />, 
-          <MainContent key="main">
-            {!showFilterBar && 
-              <MenuBar>
-                <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>
-                <MenuText>MATCH CUT</MenuText>
-              </MenuBar>
-            }
-            
-            {showFilterBar && 
-              <UserFilterInfo>
-                {(this.state.userFilter.length > 0) && <span>filter for {this.state.userFilter.length} users</span>}
-                {(this.state.musicianFilter) && <span>filter for users that named {capitalize(this.state.musicianFilter)}</span>}
-                {(this.state.yearFilter) && <span>filter for entries from {this.state.yearFilter}</span>}
+        <MainContent key="main">
+          {!showFilterBar && 
+            <MenuBar>
+              <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>
+              <MenuText>MATCH CUT</MenuText>
+            </MenuBar>
+          }
+          
+          {showFilterBar && 
+            <InfoBar onClose={this.handleFilterClose}>
+              {(this.state.userFilter.length > 0) && <span>filter for {this.state.userFilter.length} users</span>}
+              {(this.state.musicianFilter) && <span>filter for users that named {capitalize(this.state.musicianFilter)}</span>}
+              {(this.state.yearFilter) && <span>filter for entries from {this.state.yearFilter}</span>}
+            </InfoBar>
+          }
 
-                <ExitButton src="/images/close.png" onClick={this.handleFilterClose}/>
-              </UserFilterInfo>
-            }
-
-            {mainContent}
-            {(this.state.currentPage === "home" && !showFilterBar || this.state.currentPage == "list") && 
-              <AddButton onClick={()=>this.navigate("edit")} largeScreen={this.state.largeScreen}>
-                +
-              </AddButton>
-            }
-          </MainContent>
+          {mainContent}
+          {(this.state.currentPage === "home" && !showFilterBar || this.state.currentPage == "list") && 
+            <AddButton onClick={()=>this.navigate("edit")} largeScreen={this.state.largeScreen}>
+              +
+            </AddButton>
+          }
+        </MainContent>
       ]
     );
   }
@@ -340,20 +342,5 @@ const AddButton = styled.div`
   &:hover {cursor: pointer}; 
 `
 
-const UserFilterInfo = styled.div`
-  min-height: 60px;
-  padding: 20px;
-  display: flex;
-  font-size: 1.25rem;
-`
-
-const ExitButton = styled.img`
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  width: 30px;
-  height: 30px;
-  &:hover {cursor: pointer};
-`
 const GlobalStyles = createGlobalStyle`
 `

@@ -17,7 +17,6 @@ class StaticPage extends Component {
                 
     return (
       <StaticContainer>
-        <h1>{t(this.props.translations, this.props.pageKey + "_heading", this.props.locale)}</h1>
 
         <div 
           dangerouslySetInnerHTML={{__html: t(this.props.translations, this.props.pageKey + "_content", this.props.locale)}}
@@ -31,5 +30,5 @@ class StaticPage extends Component {
 export default StaticPage;
 
 const StaticContainer = styled.div`
-  padding: 50px;
+  padding: 1.25rem;
 `

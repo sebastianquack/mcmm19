@@ -257,7 +257,9 @@ const MapContainer = styled.div`
 
     .info-window-entry {
       /* entry wrapper */
-      border-top: 1px dashed white;
+      &:not(:last-child) {
+        border-bottom: 1px dashed white;
+      }
       padding-top: 0.25rem;
     }
 

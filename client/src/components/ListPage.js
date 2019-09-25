@@ -34,19 +34,20 @@ class ListPage extends Component {
                 
     const entries = this.state.entries.map((e, i)=>
       <ListItem key={i}>
-        {e.musician} {e.city} {e.year} <EditLink onClick={()=>{this.props.editEntry(e)}}>[edit]</EditLink>
+        <EditLink onClick={()=>{this.props.editEntry(e)}}>
+          {e.musician} {e.city} {e.year}
+        </EditLink>
       </ListItem>);
     return (
       <Container>
-        <h1>{t(this.props.translations, "my_entries", this.props.locale)}</h1>
         <List>{entries}</List>
+
         <p>This is your secret edit link: <a href={"#"+this.props.mcmmId}>{"#"+this.props.mcmmId}</a></p>
         <p>Bookmark it to manage your entries later or from other devices. If you lose it, you might lose access to your entries.</p>
       
-        {/*<MapComponent entries={[{entries: this.state.entries}]}/>*/}
-        <p><ShowMyEntriesButton onClick={()=>{this.props.setUserFilter([this.props.mcmmId])}}>
+        <ShowMyEntriesButton onClick={()=>{this.props.setUserFilter([this.props.mcmmId])}}>
           {t(this.props.translations, "show_my_entries", this.props.locale)}
-        </ShowMyEntriesButton></p>
+        </ShowMyEntriesButton>
       </Container>
     );
   }
@@ -54,7 +55,9 @@ class ListPage extends Component {
 
 export default ListPage;
 
-const ShowMyEntriesButton = styled.span`
+const ShowMyEntriesButton = styled.div`
+  font-family: NeutraTextDemi;
+  margin-top: 1rem;
   :hover {
     cursor: pointer;
     text-decoration: underline;
@@ -62,21 +65,27 @@ const ShowMyEntriesButton = styled.span`
 `
 
 const Container = styled.div`
-  padding: 4rem 1rem 2rem 1rem;
+  padding: 1.25rem;
 `
 
 const EditLink = styled.span`
-  color: orange;
-  margin-left: 5px;
-  :hover {cursor: pointer};
+  :hover {
+    cursor: pointer;
+    text-decoration: underline;
+  };
 `
 
 const List = styled.ul`
   padding-left: 0px;
+  font-size: 1.25rem;
+  margin-bottom: 1.25rem;
 `
 const ListItem = styled.li`
   list-style: none;
-  margin-left: 0px;
+  margin-bottom: 0.3125rem;
+  border-bottom: 1px dashed black;
+  padding-bottom: 0.3125rem;
+
 `
 
 const Dot = styled.span`
