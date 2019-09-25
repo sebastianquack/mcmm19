@@ -257,7 +257,12 @@ class BaseContainer extends Component {
           projectionMode={this.state.projectionId ? true : false}
         />, 
           <MainContent key="main">
-            {!showFilterBar && <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>}
+            {!showFilterBar && 
+              <MenuBar>
+                <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>
+                <MenuText>MATCH CUT</MenuText>
+              </MenuBar>
+            }
             
             {showFilterBar && 
               <UserFilterInfo>
@@ -286,13 +291,22 @@ class BaseContainer extends Component {
 
 export default BaseContainer;
 
-const MenuButton = styled.img`
+const MenuBar = styled.div`
   position: fixed;
   z-index: 100;
-  width: 30px;
-  height: 30px;
-  left: 10px;
-  top: 10px;
+  display: flex;
+  padding: 1rem;
+`
+
+const MenuText = styled.span`
+  font-size: 2.5rem;
+  padding-left: 1rem;
+  letter-spacing: 0.2ex;
+`
+
+const MenuButton = styled.img`
+  width: auto;
+  height: calc(2 * 1.25rem); // scaling factor for the png image * font-size
   &:hover {cursor: pointer}; 
 `
 
@@ -322,6 +336,8 @@ const AddButton = styled.div`
 const UserFilterInfo = styled.div`
   min-height: 60px;
   padding: 20px;
+  display: flex;
+  font-size: 1.25rem;
 `
 
 const ExitButton = styled.img`

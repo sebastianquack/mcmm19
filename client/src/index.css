@@ -49,4 +49,5 @@ html, body, #root {
   width: 100%;
   font-family: NeutraText, sans-serif;
   line-height: 1.15;
+  letter-spacing: 0.05ex;
 }

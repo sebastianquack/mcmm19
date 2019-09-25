@@ -104,6 +104,7 @@ const Ol = styled.ol`
   right: 0;
   padding: 1rem;
   box-sizing: border-box;
+  line-height: 1;
 
   display: flex;
   width: 100%;
