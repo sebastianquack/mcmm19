@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { apiUrl } from '../helpers'
 import axios from 'axios';
+import { makeMarkerSize } from '../helpers/index';
 
 export default class LineGraph extends PureComponent {
   constructor(props) {
@@ -50,7 +51,7 @@ export default class LineGraph extends PureComponent {
     return <li key={year}>
       <span className="year_top">
         { amount > 0 ? 
-          <img style={{transform: "translateX(-50%) scale("+amount+")"}} alt={year} src="/images/marker.svg" /> 
+          <img style={{transform: "translateX(-50%) scale("+makeMarkerSize(amount)+")"}} alt={year} src="/images/marker.svg" /> 
         : null }
       </span>
       <span className="year_middle"></span>

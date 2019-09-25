@@ -5,7 +5,7 @@ import { apiUrl } from '../helpers'
 
 import styled, { keyframes } from 'styled-components'
 
-import { capitalize } from '../helpers'
+import { capitalize, makeMarkerSize } from '../helpers'
 
 import $ from 'jquery';
 
@@ -92,6 +92,23 @@ class MapComponent extends Component {
         anchor: {x:12.5, y:12.5}, // anchor
         labelOrigin: new google.maps.Point(12.5, 40)
       };
+
+      const iconResized = (size) => {
+        const base = 10
+        const scaled = base * size
+        return {
+        ...icon,
+        scaledSize: { 
+          height: scaled,
+          width: scaled
+        },
+        anchor: {
+          x: scaled/2, 
+          y:scaled/2
+        },
+        
+      }}
+
       var latlngbounds = new window.google.maps.LatLngBounds();
 
       Object.keys(this.state.entries).forEach(k=>{      
@@ -135,9 +152,10 @@ class MapComponent extends Component {
         const musicians = this.state.entries[k]
           .map( e => e.musician )
           .join(", ")
+        const amount = this.state.entries[k].length
         let marker = new google.maps.Marker({
             position: firstEntry.cityLocation,
-            icon: icon,
+            icon: iconResized(makeMarkerSize(amount)),
             label: filterMode ? {
               color: "#000",
               fontSize: "1rem",

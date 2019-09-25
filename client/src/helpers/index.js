@@ -17,3 +17,12 @@ export function t(translations, key, locale) {
 export function capitalize(s) {
     return s.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
 }
+
+export function makeMarkerSize(amount) {
+  // get a total amount and return a scale factor between 1 and 5
+  let size = amount * 0.8
+  if (size > 5) size = 5;
+  if (size < 1) size = 1;
+  console.log(size)
+  return size
+}
