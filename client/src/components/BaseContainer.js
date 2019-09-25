@@ -117,6 +117,9 @@ class BaseContainer extends Component {
 
 
   async componentDidMount() {
+
+    // setTimeout(()=>this.navigate("scan"), 100  )
+
     disableBodyScroll(document.querySelector('body'))
 
     let queryParams = new URLSearchParams(window.location.search); 
@@ -161,6 +164,9 @@ class BaseContainer extends Component {
   }
 
   toggleMenu = ()=>{
+    if (this.state.menuOpen) {
+      this.navigate("home")
+    }
     this.setState({menuOpen: !this.state.menuOpen})
   }
 
@@ -172,7 +178,7 @@ class BaseContainer extends Component {
       this.setState({navStack});
     }
     this.setState({
-      menuOpen: false,
+      menuOpen: page !== "home",
       currentPage: page,
       currentEntry: entry,
       pageKey: entry
@@ -239,7 +245,9 @@ class BaseContainer extends Component {
         pageKey={this.state.pageKey}
       />  
     }
-    let mainContent = pages[this.state.currentPage];
+    let mainContent = pages["home"];
+
+    const page = this.state.currentPage !== "home" ? pages[this.state.currentPage] : null
     
     return (
       [
@@ -255,6 +263,7 @@ class BaseContainer extends Component {
           setLocale={this.setLocale}
           reset={this.reset}
           projectionMode={this.state.projectionId ? true : false}
+          render={page}
         />, 
           <MainContent key="main">
             {!showFilterBar && 
@@ -280,9 +289,6 @@ class BaseContainer extends Component {
                 +
               </AddButton>
             }
-            {this.state.currentPage !== "home" && 
-              <ExitButton src="/images/close.png" onClick={this.back}/>
-            }
           </MainContent>
       ]
     );
@@ -293,6 +299,7 @@ export default BaseContainer;
 
 const MenuBar = styled.div`
   position: fixed;
+  top:0;
   z-index: 100;
   display: flex;
   padding: 1rem;

@@ -50,17 +50,22 @@ class Menu extends Component {
     return (
       [<MenuShadow onClick={this.props.close} menuOpen={this.props.menuOpen}/>,
       <MenuContainer menuOpen={this.props.menuOpen}>
-        <MenuButton onClick={this.props.reset}>{t(this.props.translations, "home", this.props.locale)}</MenuButton>
-        <MenuButton onClick={()=>this.props.navigate("page", "programm")}>{t(this.props.translations, "programm", this.props.locale)}</MenuButton>
-        {!this.props.projectionMode && <MenuButton onClick={()=>this.props.navigate("list")}>{t(this.props.translations, "my_entries", this.props.locale)}</MenuButton>}
-        {!this.props.projectionMode && <MenuButton onClick={()=>this.props.navigate("scan")}>{t(this.props.translations, "scanner", this.props.locale)}</MenuButton>}
-        <MenuButton onClick={()=>this.props.navigate("page", "credits")}>{t(this.props.translations, "credits", this.props.locale)}</MenuButton>
-        
-        <LocaleToggle 
-          locale={this.props.locale} 
-          setLocale={this.props.setLocale}
-          translations={this.props.translations}
-        />
+
+        { this.props.render ? this.props.render :
+        <div>
+          <MenuButton onClick={this.props.reset}>{t(this.props.translations, "home", this.props.locale)}</MenuButton>
+          <MenuButton onClick={()=>this.props.navigate("page", "programm")}>{t(this.props.translations, "programm", this.props.locale)}</MenuButton>
+          {!this.props.projectionMode && <MenuButton onClick={()=>this.props.navigate("list")}>{t(this.props.translations, "my_entries", this.props.locale)}</MenuButton>}
+          {!this.props.projectionMode && <MenuButton onClick={()=>this.props.navigate("scan")}>{t(this.props.translations, "scanner", this.props.locale)}</MenuButton>}
+          <MenuButton onClick={()=>this.props.navigate("page", "credits")}>{t(this.props.translations, "credits", this.props.locale)}</MenuButton>
+          
+          <LocaleToggle 
+            locale={this.props.locale} 
+            setLocale={this.props.setLocale}
+            translations={this.props.translations}
+          />
+          </div>
+        }
 
         <ExitButton src="/images/close.png"  onClick={this.props.close}/>
       </MenuContainer>]
