@@ -7,8 +7,6 @@ import styled, { keyframes } from 'styled-components'
 
 import { capitalize, makeMarkerSize, t } from '../helpers'
 
-import $ from 'jquery';
-
 class InfoWindow extends Component {
   constructor(props) {
     super(props);
@@ -113,6 +111,7 @@ const NextLink = styled.span`
 
 const mapStyles = require('./GoogleMapStyles.json')
 const google = window.google;
+const MarkerClusterer = window.MarkerClusterer;
 
 class MapComponent extends Component {
 
@@ -177,7 +176,8 @@ class MapComponent extends Component {
       this.props.userFilter !== prevProps.userFilter ||
       this.props.yearFilter !== prevProps.yearFilter) {
       this.markers.forEach(m=>{
-        m.setMap(null);
+        if(this.markerCluster)
+          this.markerCluster.removeMarker(m);
       });
       this.markers = [];
       this.entries = [];
@@ -198,7 +198,7 @@ class MapComponent extends Component {
       };
 
       const iconResized = (size) => {
-        const base = 11
+        const base = 15
         const scaled = base * size
         return {
         ...icon,
@@ -234,7 +234,7 @@ class MapComponent extends Component {
               fontFamily: "NeutraTextDemi",
               text: musicians,
             } : undefined,
-            map: this.map,
+            //map: this.map,
         })
 
         marker.entries = this.state.entries[k];
@@ -246,9 +246,22 @@ class MapComponent extends Component {
         latlngbounds.extend(firstEntry.cityLocation);
       })
 
+      this.markerCluster = new MarkerClusterer(this.map, this.markers,
+      {
+        gridSize: 60,
+        minimumClusterSize: 4,
+        styles: 
+              [{
+                fontFamily: 'NeutraText',
+                textColor: 'white',
+                textSize: 16,
+                url: '/images/star_group.png',
+                height: 50,
+                width: 50
+              }]
+      });
+
       google.maps.event.addListener(this.map, "click", (e)=> {
-        this.infoWindows.forEach(i=>{i.close()});
-        this.map.setOptions({scrollwheel:true});
         this.setState({showInfoWindow: null});
       });
         
@@ -332,3 +345,4 @@ const InfoWindowPlacer = styled.div`
   
 
 `
+
