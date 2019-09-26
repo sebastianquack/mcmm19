@@ -252,10 +252,10 @@ class MapComponent extends Component {
         minimumClusterSize: 4,
         styles: 
               [{
-                fontFamily: 'NeutraText',
+                fontFamily: 'NeutraTextDemi',
                 textColor: 'white',
                 textSize: 16,
-                url: '/images/star_group.png',
+                url: '/images/star_group.svg',
                 height: 50,
                 width: 50
               }]
