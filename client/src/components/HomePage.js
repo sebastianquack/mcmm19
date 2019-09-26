@@ -25,6 +25,7 @@ class HomePage extends Component {
           yearFilter={this.props.yearFilter}
           translations={this.props.translations}
           locale={this.props.locale}
+          largeScreen={this.props.largeScreen}
         />
         
         { this.props.largeScreen &&

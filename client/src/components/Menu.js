@@ -60,7 +60,7 @@ class Menu extends Component {
       [<MenuShadow onClick={this.props.close} menuOpen={this.props.menuOpen}/>,
       <MenuContainer menuOpen={this.props.menuOpen}>
 
-        <InfoBar onClose={this.props.close}>
+        <InfoBar onClose={this.props.close} menuOpen={this.props.menuOpen}>
           { title }
         </InfoBar>
 

@@ -14,7 +14,7 @@ class InfoBar extends Component {
 
   render() {
     return (
-      <UserFilterInfo>
+      <UserFilterInfo menuOpen={this.props.menuOpen}>
         { this.props.children }
 
         <ExitButton src="/images/close.png" onClick={this.props.onClose}/>
@@ -26,13 +26,13 @@ class InfoBar extends Component {
 export default InfoBar;
 
 const UserFilterInfo = styled.div`
-  background-color: white;
-  position: absolute;
+  background-color: ${props => (!props.menuOpen ? "white" : "none") };
+  position: ${props => (!props.menuOpen ? "absolute" : "relative") };;
   z-index: 10;
   min-height: 60px;
   padding: 1.25rem;
   padding-right: calc(30px + 1rem);
-  border-bottom: 1px solid #ddd;
+  border-bottom: ${props => (!props.menuOpen ? "1px solid #ddd" : "border: none") };
   display: flex;
   font-size: 1.25rem;
   width: 100%;

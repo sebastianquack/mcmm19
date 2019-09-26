@@ -9,6 +9,99 @@ import { capitalize, makeMarkerSize, t } from '../helpers'
 
 import $ from 'jquery';
 
+class InfoWindow extends Component {
+  constructor(props) {
+    super(props);
+      this.state = {
+        entryIndex: 0
+    }
+
+    this.nextEntry = this.nextEntry.bind(this);
+  }
+
+  nextEntry = ()=> {
+    if(this.state.entryIndex < this.props.entries.length - 1) {
+      this.setState({entryIndex: this.state.entryIndex + 1})  
+    } else {
+      this.setState({entryIndex: 0})  
+    }
+  }
+
+  render() {
+
+    let entries = this.props.entries.map((e, index)=>
+      <Entry>
+        <PageNum>{this.state.entryIndex + 1}/{this.props.entries.length}</PageNum>
+        <Note>
+        {e.note ? '"'+e.note+'"' : t(this.props.translations, "ohne_worte", this.props.locale)}
+        </Note>
+        <p>
+        {e.year}, {t(this.props.translations, "listening_to", this.props.locale)} {capitalize(e.musician)} in {capitalize(e.city)}
+        </p> 
+        <Link onClick={()=>{this.props.setUserFilter([e.user_id])}}>{t(this.props.translations, "zur_bio", this.props.locale)}</Link>
+        {this.props.entries.length > 1 &&
+          <NextLink onClick={(e)=>{e.stopPropagation(); this.nextEntry();}}>{t(this.props.translations, "next_entry", this.props.locale)}</NextLink>}
+      </Entry>
+    );  
+    
+    return (
+      <InfoWindowContainer largeScreen={this.props.largeScreen} onClick={this.props.close}>{entries[this.state.entryIndex]}</InfoWindowContainer>
+    )
+  }
+}
+
+const InfoWindowContainer = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  width: ${props => props.largeScreen ? "50%" : "100%"};
+  
+  background-color: #000;
+  color: #fff;
+  padding: 25px;
+  font-family: NeutraTextDemi;
+  max-height: 66%;
+  overflow-y: scroll;
+  z-index: 100;
+
+
+
+`
+
+const Entry = styled.div`
+`
+
+const PageNum = styled.p`
+  margin-bottom: 0.5rem;
+`
+
+const Note = styled.div`
+  font-family: NeutraTextLightItalic;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+`
+
+const Link = styled.span`
+  display: block;
+  :hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+`
+
+const NextLink = styled.span`
+  margin-top: 1rem;
+  margin-bottom: 0px;
+  display: block;
+  :hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+`
+
+
 const mapStyles = require('./GoogleMapStyles.json')
 const google = window.google;
 
@@ -23,7 +116,7 @@ class MapComponent extends Component {
     this.infoWindows = [];
 
     this.state = {
-      entries: []
+      showInfoWindow: null
     }
 
     this.fetchData = this.fetchData.bind(this);
@@ -117,80 +210,37 @@ class MapComponent extends Component {
 
         let firstEntry = this.state.entries[k][0];
 
-        // assemble content
-        let content = `
-          <div class="info-window">
-          `
-        content += `
-            <span class="info-window-city">
-              ${capitalize(firstEntry.city)}
-            </span>
-          `
-        this.state.entries[k].forEach((e) => {
-          content += `
-            <div class="info-window-entry">
-              <span class="info-window-musician">
-                ${capitalize(e.musician)}
-              </span>
-              <span class="info-window-year">
-                ${e.year}
-              </span>
-              ${(e.note ? `
-                <em class="info-window-note">
-                  ${e.note}
-                </em>` : ''
-                )}
-              <span class='info-window-span' rel='${e.user_id}'>
-                ${t(this.props.translations, "zur_bio", this.props.locale)}
-              </span>
-            </div>
-          `
-        });
-        content += `
-          </div>
-          `
-        
         // add markers for user
         const musicians = this.state.entries[k]
           .map( e => capitalize(e.musician) )
           .join(", ")
         const amount = this.state.entries[k].length
+        
         let marker = new google.maps.Marker({
             position: firstEntry.cityLocation,
             icon: iconResized(makeMarkerSize(amount)),
             label: filterMode ? {
               color: "#000",
               fontSize: "1rem",
-              fontFamily: "NeutraText",
+              fontFamily: "NeutraTextDemi",
               text: musicians,
             } : undefined,
             map: this.map,
         })
 
-        let infoWindow = new google.maps.InfoWindow({
-          content: content
-        });
-
-        google.maps.event.addListener(infoWindow, 'domready', ()=> {
-          $('.info-window-span').off();
-          $('.info-window-span').click((e)=>{
-            let user_id = $(e.target).attr("rel");
-            this.props.setUserFilter([user_id]);
-          });
-        });
-
+        marker.entries = this.state.entries[k];
         marker.addListener('click', ()=> {
-          this.infoWindows.forEach(i=>{i.close()});
-          infoWindow.open(this.map, marker);
+          this.setState({showInfoWindow: marker.entries});
         });
 
         this.markers.push(marker)
-        this.infoWindows.push(infoWindow);
         latlngbounds.extend(firstEntry.cityLocation);
       })
 
       google.maps.event.addListener(this.map, "click", (e)=> {
         this.infoWindows.forEach(i=>{i.close()});
+        this.map.setOptions({scrollwheel:true});
+        this.setState({showInfoWindow: null});
       });
         
       this.lines.forEach(l=>l.setMap(null));
@@ -243,24 +293,23 @@ class MapComponent extends Component {
 
   render() {
     return (
-      <MapContainer ref={this.mapContainerRef} />
+      [<MapContainer ref={this.mapContainerRef} />,
+        <InfoWindowPlacer>{this.state.showInfoWindow && <InfoWindow 
+          entries={this.state.showInfoWindow} 
+          setUserFilter={this.props.setUserFilter}
+          translations={this.props.translations}
+          locale={this.props.locale}
+          close={()=>this.setState({showInfoWindow: null})}
+          largeScreen={this.props.largeScreen}
+          />
+        }
+        </InfoWindowPlacer>
+      ]
     )
   }
 }
 
 export default MapComponent;
-
-const glowColor1 = "#444444"; //"#e60073";
-const glowColor2 = "#404040"; //"#ff4da6";
-
-const glow = keyframes` 
-from {
-  text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px ${glowColor1}, 0 0 40px ${glowColor1}, 0 0 50px ${glowColor1}, 0 0 60px ${glowColor1}, 0 0 70px ${glowColor1};
-}
-to {
-  text-shadow: 0 0 20px #fff, 0 0 30px ${glowColor2}, 0 0 40px ${glowColor2}, 0 0 50px ${glowColor2}, 0 0 60px ${glowColor2}, 0 0 70px ${glowColor2}, 0 0 80px ${glowColor2};
-}
-`
 
 const MapContainer = styled.div`
   width: 100%; 
@@ -268,97 +317,9 @@ const MapContainer = styled.div`
   /*background-image: url("/images/background5.png");
   background-size: cover;*/
   visibility: ${props => props.visible != false ? "visible" : "hidden"};
-  * {
-   font-family: NeutraText;
-   line-height: 1.15;
-   font-size: 1rem;
-  }
+`
 
-  .info-window {
-    /* content wrapper */
-
-    .info-window-entry {
-      /* entry wrapper */
-      &:not(:last-child) {
-        border-bottom: 1px dashed white;
-      }
-      padding-top: 0.25rem;
-    }
-
-    .info-window-musician {
-      padding-right: 0.25rem;
-    }    
-
-    .info-window-note {
-      /* user note */
-      display: block;
-      font-family: NeutraTextLightItalic;
-      font-size: 2rem;
-      line-height: 2rem;
-      word-break: break-all;
-      animation: ${glow} 1s ease-in-out infinite alternate;    
-    }
-
-    span.info-window-span {
-      /* biography link */
-      font-family: NeutraTextDemi;
-      display: block;
-      text-align: right;
-      pointer-events: all;
-      :hover { 
-        cursor: pointer; 
-        text-decoration: underline;
-      }
-    }
-  }
-
-  .gm-style .gm-style-iw-c {
-    /* popup window */
-    pointer-events: none;
-    max-width: 250px !important;
-    border-radius: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-    background-color: black;
-    color: white;
-    transform: translate(0%,-100%);
-    top: 1rem;
-    z-index: 10;
-
-    padding: 0.25rem 0.25rem 0.25rem 0.25rem !important;
-
-    &, *::after, *::before {
-      border: none;
-    }
-  }
-
-  .gm-style .gm-style-iw-t::after {
-    /* popup triangle */
-    /* background: linear-gradient(45deg,rgba(0,0,0,1) 50%,rgba(0,0,0,0,0) 51%,rgba(0,0,0,0,0) 100%); */
-    display: none;
-  }
-
-  .gm-style button {
-    /* popup close button */
-
-    display: none;
-
-    /*background-image: url("/images/closeWhite.png") !important;
-    background-size: cover !important;
-    top: 0.25rem !important;
-    right: 0.25rem !important;
-    padding: 0.25rem !important;
-    width: 1rem !important;
-    height: 1rem !important;
-    opacity: 1;
-
-    img {
-      visibility: hidden;
-    }*/
-  }
-
-  .gm-style-iw-d {
-    overflow: hidden !important;
-  }
+const InfoWindowPlacer = styled.div`
+  
 
 `
