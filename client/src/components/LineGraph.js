@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 
-import { apiUrl } from '../helpers'
+import { apiUrl, yearsRange } from '../helpers'
 import axios from 'axios';
 import { makeMarkerSize } from '../helpers/index';
 
@@ -68,18 +68,23 @@ export default class LineGraph extends PureComponent {
     if (!data || data.length === 0) return null
 
     // prepend some years at the beginning
-    const prependAmount = 4
-    data.unshift(...Array.from(Array(prependAmount), (e,i)=>({
-      year:i+(data[0].year-prependAmount), 
-      amount:0
-    })))
+    const prependAmount = data[0].year - yearsRange.start
+      if (prependAmount > 0) {
+      data.unshift(...Array.from(Array(prependAmount), (e,i)=>({
+        year:i+(data[0].year-prependAmount), 
+        amount:0
+      })))
+    }
 
     // append some years at the end
-    const appendAmount = 1
-    data.push(...Array.from(Array(appendAmount), (e,i)=>({
-      year:i+(data[data.length-1].year + appendAmount), 
-      amount:0
-    })))
+    const appendAmount = yearsRange.end - data[data.length-1].year
+    if (appendAmount > 0) {
+      console.log(appendAmount, data)
+      data.push(...Array.from(Array(appendAmount), (e,i)=>({
+        year:i+(data[data.length-1].year + appendAmount), 
+        amount:0
+      })))
+    }
 
     const startYear = data[0].year
         

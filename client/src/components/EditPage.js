@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import axios from 'axios';
-import { apiUrl } from '../helpers'
+import { apiUrl, yearsRange } from '../helpers'
 import { t, capitalize } from '../helpers'
 
 import ReactAutocomplete from 'react-autocomplete';
@@ -106,8 +106,8 @@ class EditPage extends Component {
   }
 
   fixYear = year => {
-    const yearMax = new Date().getFullYear()
-    const yearMin = 1950
+    const yearMax = yearsRange.end
+    const yearMin = yearsRange.start
     if ( year < yearMin && year !== "") year = yearMin
     if ( year > yearMax) year = yearMax
     return year
