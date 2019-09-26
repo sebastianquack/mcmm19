@@ -42,6 +42,9 @@ class ListPage extends Component {
       <Container>
         <List>{entries}</List>
 
+        <p><NewEntryButton onClick={()=>this.props.navigate("edit")}>{t(this.props.translations, "new_entry", this.props.locale)}</NewEntryButton></p>
+            
+
         <p>{t(this.props.translations, "edit_link_info_1", this.props.locale)} <a href={"#"+this.props.mcmmId}>{"#"+this.props.mcmmId}</a></p>
         <p>{t(this.props.translations, "edit_link_info_2", this.props.locale)}</p>
       
@@ -56,6 +59,15 @@ class ListPage extends Component {
 export default ListPage;
 
 const ShowMyEntriesButton = styled.div`
+  font-family: NeutraTextDemi;
+  margin-top: 1rem;
+  :hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+`
+
+const NewEntryButton = styled.div`
   font-family: NeutraTextDemi;
   margin-top: 1rem;
   :hover {

@@ -143,6 +143,7 @@ class BaseContainer extends Component {
         this.setState({
           currentPage: "list",
           mcmmId: mcmmId,
+          menuOpen: true,
           navStack: ["home"]
         })
       }
@@ -165,6 +166,11 @@ class BaseContainer extends Component {
 
   toggleMenu = ()=>{
     if (this.state.menuOpen) {
+      if(this.state.currentPage == "edit") {
+        this.back();
+        return;
+      }
+
       this.navigate("home")
     }
     this.setState({menuOpen: !this.state.menuOpen})
@@ -227,6 +233,7 @@ class BaseContainer extends Component {
         locale={this.state.locale}
         setUserFilter={this.setUserFilter}
         titleKey="my_entries"
+        navigate={this.navigate}
         />,
       "edit": <EditPage 
         mcmmId={this.state.mcmmId} back={this.back} 
