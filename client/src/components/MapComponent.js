@@ -91,7 +91,7 @@ class MapComponent extends Component {
         scaledSize: {height: 30, width: 30}, // scaled size
         origin: {x:0, y:0}, // origin
         anchor: {x:12.5, y:12.5}, // anchor
-        labelOrigin: new google.maps.Point(12.5, 40)
+        labelOrigin: new google.maps.Point(12.5, 30)
       };
 
       const iconResized = (size) => {
@@ -224,8 +224,8 @@ class MapComponent extends Component {
             new google.maps.Polyline({
               path: locationPath,
               //geodesic: true,
-              strokeColor: '#aaa',
-              strokeOpacity: 1.0,
+              strokeColor: '#000',
+              strokeOpacity: 0.5,
               strokeWeight: 1
             })
           )
