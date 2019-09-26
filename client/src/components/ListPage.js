@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { apiUrl } from '../helpers'
 
-import { t } from '../helpers'
+import { t, capitalize } from '../helpers'
 
 import styled from 'styled-components'
 
@@ -35,7 +35,7 @@ class ListPage extends Component {
     const entries = this.state.entries.map((e, i)=>
       <ListItem key={i}>
         <EditLink onClick={()=>{this.props.editEntry(e)}}>
-          {e.musician} {e.city} {e.year}
+          {capitalize(e.musician)} {capitalize(e.city)} {e.year}
         </EditLink>
       </ListItem>);
     return (
