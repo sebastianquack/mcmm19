@@ -21,6 +21,9 @@ export default class LineGraph extends PureComponent {
     if(this.props.musicianFilter) {
       params.musician = this.props.musicianFilter;
     }
+    if(this.props.yearFilter) {
+      params.year = this.props.yearFilter;
+    }
     if(this.props.userFilter && this.props.userFilter.length > 0) {
       params.userIds = JSON.stringify(this.props.userFilter);
     }
@@ -42,7 +45,11 @@ export default class LineGraph extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if(this.props.musicianFilter !== prevProps.musicianFilter || this.props.userFilter !== prevProps.userFilter) {
+    if(this.props.musicianFilter !== prevProps.musicianFilter 
+      || this.props.userFilter !== prevProps.userFilter
+      || this.props.yearFilter !== prevProps.yearFilter
+
+      ) {
       this.fetchData();
     }
   }

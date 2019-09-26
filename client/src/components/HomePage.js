@@ -37,7 +37,7 @@ class HomePage extends Component {
           />
         }
 
-        { this.props.largeScreen && !this.props.yearFilter &&
+        { this.props.largeScreen &&
           <LineGraph 
             musicianFilter={this.props.musicianFilter}
             yearFilter={this.props.yearFilter}

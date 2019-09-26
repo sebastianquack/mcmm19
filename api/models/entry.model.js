@@ -185,7 +185,15 @@ module.exports = function (mongoose) {
 
                 for(let i = minYear; i <= maxYear; i++) {
 
-                  let amount = await model.find({...queryFilter, year: i, isDeleted: {$ne: true}}).count();
+                  let amount = 0;
+                  if(!request.query.year) {
+                    amount = await model.find({...queryFilter, year: i, isDeleted: {$ne: true}}).count();
+                  } else {
+                    if(i == request.query.year) {
+                      amount = await model.find({year: i, isDeleted: {$ne: true}}).count();
+                    }
+                  }
+                  
                   data.push({
                     year: i,
                     amount
@@ -215,7 +223,8 @@ module.exports = function (mongoose) {
                 validate: {
                   query: {
                     musician: Joi.string(),
-                    userIds: Joi.array()
+                    userIds: Joi.array(),
+                    year: Joi.number()
                   }
                 },
                 plugins: {
