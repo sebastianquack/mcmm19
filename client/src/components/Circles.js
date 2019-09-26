@@ -18,6 +18,14 @@ class Circles extends Component {
       )
     }
 
+    /*
+    for(let i = 0; i < 200; i ++) {
+      circles.push(
+        <circle cx="20%" cy="100%" r={i * step * 1.1} stroke="#ddd" strokeWidth="1" fill="none" />
+      )
+    }
+    */
+
     return (
        <svg style={{position: "absolute"}} height="100%" width="100%">
         {circles}

@@ -45,7 +45,7 @@ class ListPage extends Component {
         <p><NewEntryButton onClick={()=>this.props.navigate("edit")}>{t(this.props.translations, "new_entry", this.props.locale)}</NewEntryButton></p>
             
 
-        <p>{t(this.props.translations, "edit_link_info_1", this.props.locale)} <a href={"#"+this.props.mcmmId}>{"#"+this.props.mcmmId}</a></p>
+        <p>{t(this.props.translations, "edit_link_info_1", this.props.locale)} <SecretLink href={"#"+this.props.mcmmId}>{"#"+this.props.mcmmId}</SecretLink></p>
         <p>{t(this.props.translations, "edit_link_info_2", this.props.locale)}</p>
       
         <ShowMyEntriesButton onClick={()=>{this.props.setUserFilter([this.props.mcmmId])}}>
@@ -85,6 +85,17 @@ const Container = styled.div`
 const EditLink = styled.span`
   :hover {
     cursor: pointer;
+    text-decoration: underline;
+  };
+`
+
+const SecretLink = styled.a`
+  color: #000;
+  text-decoration: none;
+  :visited {
+    color: #000;
+  };
+  :hover {
     text-decoration: underline;
   };
 `

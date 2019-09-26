@@ -29,6 +29,7 @@ class InfoWindow extends Component {
 
     let entries = this.props.entries.map((e, index)=>
       <Entry>
+        
         <CloseButton src="/images/closeWhite.png"/>
         <PageNum>{this.state.entryIndex + 1}/{this.props.entries.length}</PageNum>
         <Note>
@@ -40,6 +41,7 @@ class InfoWindow extends Component {
         <Link onClick={()=>{this.props.setUserFilter([e.user_id])}}>{t(this.props.translations, "zur_bio", this.props.locale)}</Link>
         {this.props.entries.length > 1 &&
           <NextLink onClick={(e)=>{e.stopPropagation(); this.nextEntry();}}>{t(this.props.translations, "next_entry", this.props.locale)}</NextLink>}
+        
       </Entry>
     );  
     
