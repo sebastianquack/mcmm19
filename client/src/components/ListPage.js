@@ -42,8 +42,8 @@ class ListPage extends Component {
       <Container>
         <List>{entries}</List>
 
-        <p>This is your secret edit link: <a href={"#"+this.props.mcmmId}>{"#"+this.props.mcmmId}</a></p>
-        <p>Bookmark it to manage your entries later or from other devices. If you lose it, you might lose access to your entries.</p>
+        <p>{t(this.props.translations, "edit_link_info_1", this.props.locale)} <a href={"#"+this.props.mcmmId}>{"#"+this.props.mcmmId}</a></p>
+        <p>{t(this.props.translations, "edit_link_info_2", this.props.locale)}</p>
       
         <ShowMyEntriesButton onClick={()=>{this.props.setUserFilter([this.props.mcmmId])}}>
           {t(this.props.translations, "show_my_entries", this.props.locale)}

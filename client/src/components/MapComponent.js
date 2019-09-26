@@ -5,7 +5,7 @@ import { apiUrl } from '../helpers'
 
 import styled, { keyframes } from 'styled-components'
 
-import { capitalize, makeMarkerSize } from '../helpers'
+import { capitalize, makeMarkerSize, t } from '../helpers'
 
 import $ from 'jquery';
 
@@ -139,7 +139,7 @@ class MapComponent extends Component {
                 </em>` : ''
                 )}
               <span class='info-window-span' rel='${e.user_id}'>
-                zur Biografie
+                ${t(this.props.translations, "zur_bio", this.props.locale)}
               </span>
             </div>
           `
@@ -150,7 +150,7 @@ class MapComponent extends Component {
         
         // add markers for user
         const musicians = this.state.entries[k]
-          .map( e => e.musician )
+          .map( e => capitalize(e.musician) )
           .join(", ")
         const amount = this.state.entries[k].length
         let marker = new google.maps.Marker({

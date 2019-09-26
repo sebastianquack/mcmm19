@@ -23,6 +23,8 @@ class HomePage extends Component {
           setUserFilter={this.props.setUserFilter}
           musicianFilter={this.props.musicianFilter}
           yearFilter={this.props.yearFilter}
+          translations={this.props.translations}
+          locale={this.props.locale}
         />
         
         { this.props.largeScreen &&

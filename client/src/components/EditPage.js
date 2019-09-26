@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import axios from 'axios';
 import { apiUrl } from '../helpers'
-import { t } from '../helpers'
+import { t, capitalize } from '../helpers'
 
 import ReactAutocomplete from 'react-autocomplete';
 
@@ -19,7 +19,8 @@ class EditPage extends Component {
       _id: this.props.entry ? this.props.entry._id : null,
       musicians: [],
       cities: [],
-      changed: false
+      changed: false,
+      processing: false,
     }
   }
 
@@ -37,6 +38,7 @@ class EditPage extends Component {
 
   handleSubmit = (event)=> {
     console.log(this.state);
+    this.setState({processing: true});
 
     if(!this.state._id) {
       axios.post(apiUrl + '/entry', {
@@ -48,7 +50,7 @@ class EditPage extends Component {
       })
       .then((response)=> {
         console.log(response);
-        this.setState({_id: response.data._id, changed: false})
+        this.setState({_id: response.data._id, changed: false, processing: false})
       })
       .catch((error)=> {
         console.log(error);
@@ -65,7 +67,7 @@ class EditPage extends Component {
       })
       .then((response)=> {
         console.log(response);
-        this.setState({_id: response.data._id, changed: false})
+        this.setState({_id: response.data._id, changed: false, processing: false})
       })
       .catch((error)=> {
         console.log(error);
@@ -77,6 +79,7 @@ class EditPage extends Component {
   handleDelete = () => {
 
     if(window.confirm("really?")) {
+        this.setState({processing: true});
         axios.delete(apiUrl + '/entry/' + this.state._id, {        
       })
       .then((response)=> {
@@ -114,7 +117,7 @@ class EditPage extends Component {
     return (
       <Container>
         <Form>
-          <Label>musician/composer/band</Label> 
+          <Label>{t(this.props.translations, "musician_prompt", this.props.locale)}</Label> 
           
           <ReactAutocomplete
             items={this.state.musicians.map((m)=>{return {value: m}})}
@@ -128,7 +131,7 @@ class EditPage extends Component {
                 {item.value}
               </div>
             }
-            value={this.state.musician}
+            value={capitalize(this.state.musician)}
             onChange={(e) => this.setState({musician: e.target.value, changed: true})}
             onSelect={(val) => this.setState({musician: val, changed: true})}
             wrapperStyle={{display: "block"}}
@@ -136,7 +139,7 @@ class EditPage extends Component {
           />
 
           <br/>
-          <Label>city</Label> 
+          <Label>{t(this.props.translations, "city_prompt", this.props.locale)}</Label> 
           
           <ReactAutocomplete
             items={this.state.cities.map((c)=>{return {value: c}})}
@@ -150,7 +153,7 @@ class EditPage extends Component {
                 {item.value}
               </div>
             }
-            value={this.state.city}
+            value={capitalize(this.state.city)}
             onChange={(e) => this.setState({city: e.target.value, changed: true})}
             onSelect={(val) => this.setState({city: val, changed: true})}
             wrapperStyle={{display: "block", opacity: 1}}
@@ -158,7 +161,7 @@ class EditPage extends Component {
           />
 
           <br/>
-          <Label>year</Label>
+          <Label>{t(this.props.translations, "year_prompt", this.props.locale)}</Label>
           <input 
             autoComplete="off" 
             size="4" 
@@ -170,11 +173,14 @@ class EditPage extends Component {
             onBlur={() => this.setState({year:this.fixYear(this.state.year)})} 
           />
           <br/>
-          <Label>note</Label>
+          <Label>{t(this.props.translations, "note_prompt", this.props.locale)}</Label>
           <textarea name="note" maxlength="200" value={this.state.note} onChange={this.handleInputChange}/>
           <br/>
-          {this.state.changed && <Button onClick={this.handleSubmit}>save</Button>}
-          {this.state._id && <Button onClick={this.handleDelete}>delete entry</Button>}
+          {!this.state.processing ? <div>
+            {this.state.changed && <Button onClick={this.handleSubmit}>{t(this.props.translations, "save_entry", this.props.locale)}</Button>}
+            {this.state._id && <Button onClick={this.handleDelete}>{t(this.props.translations, "delete_entry", this.props.locale)}</Button>}
+            </div>
+          : <span>{t(this.props.translations, "...", this.props.locale)}</span>}
         </Form>
       </Container>
     );

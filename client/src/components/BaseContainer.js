@@ -13,7 +13,7 @@ import StaticPage from './StaticPage.js';
 import InfoBar from './InfoBar.js';
 
 import axios from 'axios';
-import { apiUrl, capitalize } from '../helpers'
+import { apiUrl, capitalize, t } from '../helpers'
 
 import { isLargeScreen } from '../helpers/'
 import styled from 'styled-components'
@@ -279,9 +279,9 @@ class BaseContainer extends Component {
           
           {showFilterBar && 
             <InfoBar onClose={this.handleFilterClose}>
-              {(this.state.userFilter.length > 0) && <span>filter for {this.state.userFilter.length} users</span>}
-              {(this.state.musicianFilter) && <span>filter for users that named {capitalize(this.state.musicianFilter)}</span>}
-              {(this.state.yearFilter) && <span>filter for entries from {this.state.yearFilter}</span>}
+              {(this.state.userFilter.length > 0) && <span>{t(this.state.translations, "filter_for", this.state.locale)} {this.state.userFilter.length} {t(this.state.translations, "filter_for", this.state.locale)}</span>}
+              {(this.state.musicianFilter) && <span>{t(this.state.translations, "filter_for", this.state.locale)} {t(this.state.translations, "users_that_named", this.state.locale)} {capitalize(this.state.musicianFilter)}</span>}
+              {(this.state.yearFilter) && <span>{t(this.state.translations, "filter_for", this.state.locale)} {t(this.state.translations, "entries_from_year", this.state.locale)} {this.state.yearFilter}</span>}
             </InfoBar>
           }
 
