@@ -117,6 +117,11 @@ class EditPage extends Component {
     return (
       <Container>
         <Form>
+          
+          <Label>{t(this.props.translations, "note_prompt", this.props.locale)}</Label>
+          <textarea name="note" maxlength="200" value={this.state.note} onChange={this.handleInputChange}/>
+          <br/>
+          
           <Label>{t(this.props.translations, "musician_prompt", this.props.locale)}</Label> 
           
           <ReactAutocomplete
@@ -172,9 +177,6 @@ class EditPage extends Component {
             onChange={this.handleInputChange} 
             onBlur={() => this.setState({year:this.fixYear(this.state.year)})} 
           />
-          <br/>
-          <Label>{t(this.props.translations, "note_prompt", this.props.locale)}</Label>
-          <textarea name="note" maxlength="200" value={this.state.note} onChange={this.handleInputChange}/>
           <br/>
           {!this.state.processing ? <div>
             {this.state.changed && <Button onClick={this.handleSubmit}>{t(this.props.translations, "save_entry", this.props.locale)}</Button>}
