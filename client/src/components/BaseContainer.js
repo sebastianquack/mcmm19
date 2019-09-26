@@ -337,10 +337,11 @@ const AddButton = styled.div`
   z-index: 100;
   right: 1rem;
   bottom: ${ props => (props.largeScreen ? "9rem" : "2rem") };
-  width: 2.5rem;
-  height: 2.5rem;
-  font-size: 2rem;
-  line-height: 1.1rem;
+  width: 3rem;
+  height: 3rem;
+  font-size: 4rem;
+  line-height: 1.2rem;
+  font-family: NeutraTextLight;
   text-align: center;
   border: 2px solid black;
   border-radius: 50%;

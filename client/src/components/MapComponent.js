@@ -63,7 +63,8 @@ class MapComponent extends Component {
       fullscreenControl: false, 
       mapTypeControl: false,
       zoomControl: false,
-      styles: mapStyles // change default map styles
+      styles: mapStyles, // change default map styles
+      backgroundColor: 'hsla(0, 0%, 0%, 0)',
     });
 
   }
@@ -94,7 +95,7 @@ class MapComponent extends Component {
       };
 
       const iconResized = (size) => {
-        const base = 10
+        const base = 11
         const scaled = base * size
         return {
         ...icon,
@@ -263,6 +264,8 @@ to {
 const MapContainer = styled.div`
   width: 100%; 
   height: 100%;
+  background-image: url("/images/background5.png");
+  background-size: cover;
   visibility: ${props => props.visible != false ? "visible" : "hidden"};
   * {
    font-family: NeutraText;
