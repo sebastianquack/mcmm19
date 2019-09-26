@@ -35,7 +35,7 @@ class ListPage extends Component {
     const entries = this.state.entries.map((e, i)=>
       <ListItem key={i}>
         <EditLink onClick={()=>{this.props.editEntry(e)}}>
-          {capitalize(e.musician)} {capitalize(e.city)} {e.year}
+          {e.year}, {capitalize(e.musician)} in {capitalize(e.city)} 
         </EditLink>
       </ListItem>);
     return (
@@ -70,6 +70,7 @@ const ShowMyEntriesButton = styled.div`
 const NewEntryButton = styled.div`
   font-family: NeutraTextDemi;
   margin-top: 1rem;
+  margin-bottom: 1rem;
   :hover {
     cursor: pointer;
     text-decoration: underline;
@@ -78,6 +79,7 @@ const NewEntryButton = styled.div`
 
 const Container = styled.div`
   padding: 1.25rem;
+  font-family: NeutraTextDemi;
 `
 
 const EditLink = styled.span`
@@ -97,6 +99,7 @@ const ListItem = styled.li`
   margin-bottom: 0.3125rem;
   border-bottom: 1px dashed black;
   padding-bottom: 0.3125rem;
+  font-family: NeutraText;
 
 `
 
