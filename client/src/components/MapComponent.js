@@ -31,6 +31,7 @@ class InfoWindow extends Component {
 
     let entries = this.props.entries.map((e, index)=>
       <Entry>
+        <CloseButton src="/images/closeWhite.png"/>
         <PageNum>{this.state.entryIndex + 1}/{this.props.entries.length}</PageNum>
         <Note>
         {e.note ? '"'+e.note+'"' : t(this.props.translations, "ohne_worte", this.props.locale)}
@@ -62,13 +63,21 @@ const InfoWindowContainer = styled.div`
   color: #fff;
   padding: 25px;
   font-family: NeutraTextDemi;
-  max-height: 66%;
+  max-height: 80%;
   overflow-y: scroll;
   z-index: 100;
-
-
-
 `
+
+const CloseButton = styled.img`
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 20px;
+  height: 20px;
+  :hover {
+    cursor: pointer;
+  };
+` 
 
 const Entry = styled.div`
 `

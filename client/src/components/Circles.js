@@ -11,7 +11,7 @@ class Circles extends Component {
 
   render() {
     let circles = [];
-    let step = 10;
+    let step = 7;
     for(let i = 0; i < 200; i ++) {
       circles.push(
         <circle cx="66%" cy="-100" r={i * step} stroke="#ddd" strokeWidth="1" fill="none" />
