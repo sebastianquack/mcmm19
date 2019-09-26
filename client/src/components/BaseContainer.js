@@ -11,6 +11,7 @@ import EditPage from './EditPage.js';
 import ScanPage from './ScanPage.js';
 import StaticPage from './StaticPage.js';
 import InfoBar from './InfoBar.js';
+import Circles from './Circles.js';
 
 import axios from 'axios';
 import { apiUrl, capitalize, t } from '../helpers'
@@ -277,6 +278,8 @@ class BaseContainer extends Component {
           render={page}
         />, 
         <MainContent key="main">
+          <Circles/>
+          
           {!showFilterBar && 
             <MenuBar>
               <MenuButton onClick={this.toggleMenu} src="images/menu.png"/>

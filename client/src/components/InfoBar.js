@@ -26,9 +26,13 @@ class InfoBar extends Component {
 export default InfoBar;
 
 const UserFilterInfo = styled.div`
+  background-color: white;
+  position: absolute;
+  z-index: 10;
   min-height: 60px;
   padding: 1.25rem;
   padding-right: calc(30px + 1rem);
+  border-bottom: 1px solid #ddd;
   display: flex;
   font-size: 1.25rem;
   width: 100%;

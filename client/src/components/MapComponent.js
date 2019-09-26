@@ -62,6 +62,7 @@ class MapComponent extends Component {
       streetViewControl: false, 
       fullscreenControl: false, 
       mapTypeControl: false,
+      maxZoom: 10,
       zoomControl: false,
       styles: mapStyles, // change default map styles
       backgroundColor: 'hsla(0, 0%, 0%, 0)',
@@ -264,8 +265,8 @@ to {
 const MapContainer = styled.div`
   width: 100%; 
   height: 100%;
-  background-image: url("/images/background5.png");
-  background-size: cover;
+  /*background-image: url("/images/background5.png");
+  background-size: cover;*/
   visibility: ${props => props.visible != false ? "visible" : "hidden"};
   * {
    font-family: NeutraText;
