@@ -1,5 +1,10 @@
 export const apiUrl = "/api"
 
+export const yearsRange = {
+  start: 1950,
+  end: new Date().getFullYear()
+}
+
 export const isLargeScreen = function(width, height) {
   return width > 600 && height > 400
 }
@@ -23,6 +28,5 @@ export function makeMarkerSize(amount) {
   let size = amount * 0.8
   if (size > 5) size = 5;
   if (size < 1) size = 1;
-  console.log(size)
   return size
 }
