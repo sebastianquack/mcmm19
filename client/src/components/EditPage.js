@@ -197,7 +197,7 @@ const Container = styled.div`
 
 const Label = styled.label`
   display: inline-block;
-  width: 200px;
+  width: 100%;
   margin-top: 10px;
   margin-bottom: 5px;
 `
