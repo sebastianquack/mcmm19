@@ -163,7 +163,7 @@ class MapComponent extends Component {
     this.fetchData();
 
     this.map = new google.maps.Map(this.mapContainerRef.current, {
-      zoom: 1,
+      zoom:4,
       center: {lat: 0, lng: 0},
       streetViewControl: false, 
       fullscreenControl: false, 
@@ -222,35 +222,48 @@ class MapComponent extends Component {
 
       var latlngbounds = new window.google.maps.LatLngBounds();
 
-      Object.keys(this.state.entries).forEach(k=>{      
+      Object.keys(this.state.entries).forEach((k)=>{      
 
         let firstEntry = this.state.entries[k][0];
+
+        // check if there is already a marker at this location for example multiple spellings of same place!
+        let duplicateLocation = false;
+        this.markers.forEach((m, index2)=>{
+          if(firstEntry.cityLocation.lat == m.position.lat() && 
+            firstEntry.cityLocation.lng == m.position.lng()) {
+            m.entries = m.entries.concat(this.state.entries[k])
+            duplicateLocation = true;
+            console.log("duplicateLocation");
+          }
+        })
 
         // add markers for user
         const musicians = this.state.entries[k]
           .map( e => capitalize(e.musician) )
           .join(", ")
         const amount = this.state.entries[k].length
-        
-        let marker = new google.maps.Marker({
-            position: firstEntry.cityLocation,
-            icon: iconResized(makeMarkerSize(amount)),
-            label: filterMode ? {
-              color: "#000",
-              fontSize: "1rem",
-              fontFamily: "NeutraTextDemi",
-              text: musicians,
-            } : undefined,
-            //map: this.map,
-        })
 
-        marker.entries = this.state.entries[k];
-        marker.addListener('click', ()=> {
-          this.props.setInfoWindow(marker.entries);
-        });
+        if(!duplicateLocation) {
+          let marker = new google.maps.Marker({
+              position: firstEntry.cityLocation,
+              icon: iconResized(makeMarkerSize(amount)),
+              label: filterMode ? {
+                color: "#000",
+                fontSize: "1rem",
+                fontFamily: "NeutraTextDemi",
+                text: musicians,
+              } : undefined,
+              //map: this.map,
+          })
 
-        this.markers.push(marker)
-        latlngbounds.extend(firstEntry.cityLocation);
+          marker.entries = this.state.entries[k];
+          marker.addListener('click', ()=> {
+            this.props.setInfoWindow(marker.entries);
+          });
+
+          this.markers.push(marker)
+          latlngbounds.extend(firstEntry.cityLocation);
+        }        
       })
 
       this.map.fitBounds(latlngbounds);
@@ -326,11 +339,7 @@ class MapComponent extends Component {
           this.lines.forEach(l=>l.setMap(this.map));
         }
 
-      });
-        
-      var zoom = this.map.getZoom();
-      this.map.setZoom(zoom < 2 ? 2 : zoom); // minimum initial zoom is 2, so there are no visible borders
-  
+      });  
   }
 
   render() {
