@@ -45,8 +45,8 @@ class ListPage extends Component {
         <p><NewEntryButton onClick={()=>this.props.navigate("edit")}>{t(this.props.translations, "new_entry", this.props.locale)}</NewEntryButton></p>
             
 
-        <p>{t(this.props.translations, "edit_link_info_1", this.props.locale)}<br><SecretLink href={"#"+this.props.mcmmId}>{window.location.href}</SecretLink></p>
-        <p>{t(this.props.translations, "edit_link_info_2", this.props.locale)}</p>
+        <p>{t(this.props.translations, "edit_link_info_1", this.props.locale)}<br/><SecretLink href={"#"+this.props.mcmmId}>{window.location.href}</SecretLink></p>
+        <p><br/>{t(this.props.translations, "edit_link_info_2", this.props.locale)}</p>
       
         <ShowMyEntriesButton onClick={()=>{this.props.setUserFilter([this.props.mcmmId])}}>
           {t(this.props.translations, "show_my_entries", this.props.locale)}
