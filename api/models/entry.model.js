@@ -56,8 +56,8 @@ module.exports = function (mongoose) {
 
       create: {
         pre: async function (payload, request, Log) {
-          payload.musician = payload.musician.toLowerCase();
-          payload.city = payload.city.toLowerCase();
+          payload.musician = payload.musician.toLowerCase().trim();
+          payload.city = payload.city.toLowerCase().trim();
           if(!payload.cityLocation)
             payload = await addCityLocation(payload);
           return payload;
@@ -66,8 +66,8 @@ module.exports = function (mongoose) {
 
       update: {
         pre: async function (_id, payload, request, Log) {
-          payload.musician = payload.musician.toLowerCase();
-          payload.city = payload.city.toLowerCase();
+          payload.musician = payload.musician.toLowerCase().trim();
+          payload.city = payload.city.toLowerCase().trim();
           payload = await addCityLocation(payload);
           return payload;
         }
@@ -455,10 +455,10 @@ module.exports = function (mongoose) {
 
                   if(entries.length) {
                     entries.forEach(e=>{
-                      if(!result[e.city]) {
-                        result[e.city] = [];
+                      if(!result[e.city.toLowerCase()]) {
+                        result[e.city.toLowerCase()] = [];
                       }
-                      result[e.city].push(e);
+                      result[e.city.toLowerCase()].push(e);
                     })
                   }
 
