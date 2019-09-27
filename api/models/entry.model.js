@@ -490,10 +490,10 @@ module.exports = function (mongoose) {
                     if(entries.length) {
 
                       entries.forEach(e=>{
-                        if(!result[e.city]) {
-                          result[e.city] = [];
+                        if(!result[e.city.toLowerCase()]) {
+                          result[e.city.toLowerCase()] = [];
                         }
-                        result[e.city].push(e);
+                        result[e.city.toLowerCase()].push(e);
                       })
                     }
                   }
