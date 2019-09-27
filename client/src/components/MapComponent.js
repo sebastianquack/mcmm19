@@ -38,7 +38,7 @@ class InfoWindow extends Component {
         <p>
         {e.year}, {t(this.props.translations, "listening_to", this.props.locale)} <MusicianLink
           onClick={()=>{this.props.setMusicianFilter(e.musician)}}
-        >>{capitalize(e.musician)}</MusicianLink> in {capitalize(e.city)}
+        >> {capitalize(e.musician)}</MusicianLink> in {capitalize(e.city)}
         </p> 
         <Link onClick={()=>{this.props.setUserFilter([e.user_id])}}>{t(this.props.translations, "zur_bio", this.props.locale)}</Link>
         {this.props.entries.length > 1 &&
