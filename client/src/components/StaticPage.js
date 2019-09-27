@@ -31,4 +31,22 @@ export default StaticPage;
 
 const StaticContainer = styled.div`
   padding: 1.25rem;
+  font-family: NeutraTextDemi;
+  p {
+    margin-bottom: 1rem;
+  }
+  h2 {
+    font-family: NeutraText;
+    margin-bottom: 1rem;
+  }
+  a {
+    color: #000;
+    :visited {
+      color: #000;
+    }
+    text-decoration: none;
+    :hover {
+      text-decoration: underline;
+    }
+  }
 `
