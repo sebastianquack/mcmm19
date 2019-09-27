@@ -228,11 +228,13 @@ class MapComponent extends Component {
 
         // check if there is already a marker at this location for example multiple spellings of same place!
         let duplicateLocation = false;
+        let duplicateMarker = null;
         this.markers.forEach((m, index2)=>{
           if(firstEntry.cityLocation.lat == m.position.lat() && 
             firstEntry.cityLocation.lng == m.position.lng()) {
             m.entries = m.entries.concat(this.state.entries[k])
             duplicateLocation = true;
+            m.setIcon(iconResized(makeMarkerSize(m.entries.length)));
             console.log("duplicateLocation");
           }
         })
@@ -254,7 +256,7 @@ class MapComponent extends Component {
                 text: musicians,
               } : undefined,
               //map: this.map,
-          })
+          }) 
 
           marker.entries = this.state.entries[k];
           marker.addListener('click', ()=> {
