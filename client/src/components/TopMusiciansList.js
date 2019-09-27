@@ -21,7 +21,7 @@ class TopMusiciansList extends Component {
   }
 
   fetchData() {
-    console.log(this.props);
+    //console.log(this.props);
     let params = {}
 
     if(this.props.musicianFilter) {
@@ -36,7 +36,7 @@ class TopMusiciansList extends Component {
 
     axios.get(apiUrl + "/top_musicians/10/", {params})
     .then((response)=> {
-      console.log(response.data);
+      //console.log(response.data);
       this.setState({ musicians: response.data })    
     })
     .catch((e)=> {

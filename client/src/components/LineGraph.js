@@ -30,7 +30,7 @@ export default class LineGraph extends PureComponent {
     
     axios.get(apiUrl + "/year_data/", {params})
     .then((response)=> {
-      console.log("yearly data loaded")
+      //console.log("yearly data loaded")
       this.setState({
         data: response.data
       });
@@ -86,7 +86,7 @@ export default class LineGraph extends PureComponent {
     // append some years at the end
     const appendAmount = yearsRange.end - data[data.length-1].year
     if (appendAmount > 0) {
-      console.log(appendAmount, data)
+      //console.log(appendAmount, data)
       data.push(...Array.from(Array(appendAmount), (e,i)=>({
         year:i+(data[data.length-1].year + appendAmount), 
         amount:0

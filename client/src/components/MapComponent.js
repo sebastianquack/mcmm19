@@ -42,7 +42,7 @@ class InfoWindow extends Component {
         </p> 
         <Link onClick={()=>{this.props.setUserFilter([e.user_id])}}>{t(this.props.translations, "zur_bio", this.props.locale)}</Link>
         {this.props.entries.length > 1 &&
-          <NextLink onClick={(e)=>{e.stopPropagation(); this.nextEntry();}}>{t(this.props.translations, "next_entry", this.props.locale)}</NextLink>}
+          <NextLink largeScreen={this.props.largeScreen} onClick={(e)=>{e.stopPropagation(); this.nextEntry();}}>{t(this.props.translations, "next_entry", this.props.locale)}</NextLink>}
         
       </Entry>
     );  
@@ -65,9 +65,9 @@ const InfoWindowContainer = styled.div`
   color: #fff;
   padding: 25px;
   font-family: NeutraTextDemi;
-  max-height: 80%;
+  max-height: 100%;
   overflow-y: scroll;
-  z-index: 100;
+  z-index: 200;
 `
 
 const CloseButton = styled.img`
@@ -104,7 +104,7 @@ const Link = styled.span`
 
 const NextLink = styled.span`
   margin-top: 1rem;
-  margin-bottom: 0px;
+  margin-bottom: ${props => props.largeScreen ? "0rem" : "1rem"};
   display: block;
   :hover {
     text-decoration: underline;
@@ -180,9 +180,11 @@ class MapComponent extends Component {
     if(this.props.musicianFilter !== prevProps.musicianFilter || 
       this.props.userFilter !== prevProps.userFilter ||
       this.props.yearFilter !== prevProps.yearFilter) {
+      console.log("componentDidUpdate");
+      if(this.markerCluster)
+          this.markerCluster.clearMarkers();
       this.markers.forEach(m=>{
-        if(this.markerCluster)
-          this.markerCluster.removeMarker(m);
+        m.setMap(null);
       });
       this.markers = [];
       this.entries = [];
@@ -251,68 +253,81 @@ class MapComponent extends Component {
         latlngbounds.extend(firstEntry.cityLocation);
       })
 
-      this.markerCluster = new MarkerClusterer(this.map, this.markers,
-      {
-        gridSize: 60,
-        minimumClusterSize: 4,
-        styles: 
-              [{
-                fontFamily: 'NeutraTextDemi',
-                textColor: 'white',
-                textSize: 16,
-                url: '/images/star_group.svg',
-                height: 50,
-                width: 50
-              }]
-      });
-
-      google.maps.event.addListener(this.map, "click", (e)=> {
-        this.props.setInfoWindow(null);
-      });
-        
-      this.lines.forEach(l=>l.setMap(null));
-      this.lines = [];
-      
-      if(filterMode) {
-        
-        let paths = {};
-        
-        // gather path data
-        Object.keys(this.state.entries).forEach(k=>{      
-          this.state.entries[k].forEach(e=>{
-
-            if(!paths[e.user_id]) {
-              paths[e.user_id] = [];
-            }
-            paths[e.user_id].push({
-              location: e.cityLocation,
-              year: e.year
-            });
-          })
-        });
-
-        console.log(paths);
-
-        // sort entries by year and assemble polylines
-        Object.keys(paths).forEach(k=>{
-          let p = paths[k];
-          p.sort((a, b)=>{return b.year-a.year});
-          let locationPath = p.map(l=>{return {lat: l.location.lat, lng: l.location.lng}});
-          this.lines.push(
-            new google.maps.Polyline({
-              path: locationPath,
-              //geodesic: true,
-              strokeColor: '#000',
-              strokeOpacity: 0.5,
-              strokeWeight: 1
-            })
-          )
-        });
-
-        this.lines.forEach(l=>l.setMap(this.map));
-      }
-      
       this.map.fitBounds(latlngbounds);
+
+      let listener = google.maps.event.addListener(this.map, "idle", (e)=> {
+        google.maps.event.removeListener(listener);
+
+        console.log("filterOn", this.props.filterOn);
+        if(!this.props.filterOn) {
+          this.markerCluster = new MarkerClusterer(this.map, this.markers,
+          {
+            gridSize: 60,
+            minimumClusterSize: 2,
+            styles: 
+                  [{
+                    fontFamily: 'NeutraTextDemi',
+                    textColor: 'white',
+                    textSize: 16,
+                    url: '/images/star_group.svg',
+                    height: 50,
+                    width: 50
+                  }]
+          });
+        } else {
+          this.markers.forEach(m=>{
+            m.setMap(this.map);
+          })
+        }
+
+        google.maps.event.addListener(this.map, "click", (e)=> {
+          this.props.setInfoWindow(null);
+        });
+          
+        this.lines.forEach(l=>l.setMap(null));
+        this.lines = [];
+        
+        if(filterMode) {
+          
+          let paths = {};
+          
+          // gather path data
+          Object.keys(this.state.entries).forEach(k=>{      
+            this.state.entries[k].forEach(e=>{
+
+              if(!paths[e.user_id]) {
+                paths[e.user_id] = [];
+              }
+              paths[e.user_id].push({
+                location: e.cityLocation,
+                year: e.year
+              });
+            })
+          });
+
+          console.log(paths);
+
+          // sort entries by year and assemble polylines
+          Object.keys(paths).forEach(k=>{
+            let p = paths[k];
+            p.sort((a, b)=>{return b.year-a.year});
+            let locationPath = p.map(l=>{return {lat: l.location.lat, lng: l.location.lng}});
+            this.lines.push(
+              new google.maps.Polyline({
+                path: locationPath,
+                //geodesic: true,
+                strokeColor: '#000',
+                strokeOpacity: 0.5,
+                strokeWeight: 1
+              })
+            )
+          });
+
+          this.lines.forEach(l=>l.setMap(this.map));
+        }
+
+      });
+        
       var zoom = this.map.getZoom();
       this.map.setZoom(zoom < 2 ? 2 : zoom); // minimum initial zoom is 2, so there are no visible borders
   

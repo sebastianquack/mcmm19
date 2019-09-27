@@ -51,8 +51,6 @@ class Menu extends Component {
 
   render() {
 
-    console.log(this.props.render)
-
     const title = this.props.render && this.props.render.props.titleKey
       ? t(this.props.translations, this.props.render.props.titleKey, this.props.locale) 
       : t(this.props.translations, "menu", this.props.locale)

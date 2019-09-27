@@ -167,7 +167,7 @@ class BaseContainer extends Component {
     }
   
     let response = await axios.get(apiUrl + "/translation");
-    console.log(response);
+    //console.log(response);
     this.setState({translations: response.data.docs});
   }
 
@@ -191,7 +191,7 @@ class BaseContainer extends Component {
     if(!noSave) {
       let navStack = this.state.navStack;
       navStack.push(this.state.currentPage);
-      console.log(navStack);
+      //console.log(navStack);
       this.setState({navStack});
     }
     this.setState({

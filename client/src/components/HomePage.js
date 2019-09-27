@@ -29,6 +29,7 @@ class HomePage extends Component {
           setInfoWindow={this.props.setInfoWindow}
           showInfoWindow={this.props.showInfoWindow}
           setMusicianFilter={this.props.setMusicianFilter}
+          filterOn={showFilterBar}
         />
         
         { this.props.largeScreen &&
