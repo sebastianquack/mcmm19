@@ -289,7 +289,11 @@ class BaseContainer extends Component {
           
           {showFilterBar && 
             <InfoBar onClose={this.handleFilterClose} menuOpen={this.state.menuOpen}>
-              {(this.state.userFilter.length > 0) && <span>{t(this.state.translations, "filter_for", this.state.locale)} {this.state.userFilter.length} {t(this.state.translations, "users", this.state.locale)}</span>}
+              {(this.state.userFilter.length > 0) && 
+                <span>{t(this.state.translations, "filter_for", this.state.locale)} 
+                &nbsp;{this.state.userFilter.length}&nbsp;
+                {this.state.userFilter.length > 1 ? t(this.state.translations, "users", this.state.locale) : t(this.state.translations, "user", this.state.locale)}
+              </span>}
               {(this.state.musicianFilter) && <span>{t(this.state.translations, "filter_for", this.state.locale)} {t(this.state.translations, "users_that_named", this.state.locale)} {capitalize(this.state.musicianFilter)}</span>}
               {(this.state.yearFilter) && <span>{t(this.state.translations, "filter_for", this.state.locale)} {t(this.state.translations, "entries_from_year", this.state.locale)} {this.state.yearFilter}</span>}
             </InfoBar>
