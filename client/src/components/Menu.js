@@ -74,6 +74,7 @@ class Menu extends Component {
               <MenuContent>
                 <MenuButton onClick={this.props.reset}>{t(this.props.translations, "home", this.props.locale)}</MenuButton>
                 <MenuButton onClick={()=>this.props.navigate("page", "programm")}>{t(this.props.translations, "programm", this.props.locale)}</MenuButton>
+                <MenuButton onClick={()=>this.props.navigate("page", "howto")}>{t(this.props.translations, "howto", this.props.locale)}</MenuButton>
                 {!this.props.projectionMode && <MenuButton onClick={()=>this.props.navigate("list")}>{t(this.props.translations, "my_entries", this.props.locale)}</MenuButton>}
                 {!this.props.projectionMode && <MenuButton onClick={()=>this.props.navigate("scan")}>{t(this.props.translations, "scanner", this.props.locale)}</MenuButton>}
                 <MenuButton onClick={()=>this.props.navigate("page", "credits")}>{t(this.props.translations, "credits", this.props.locale)}</MenuButton>
