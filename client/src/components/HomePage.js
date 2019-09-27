@@ -26,6 +26,8 @@ class HomePage extends Component {
           translations={this.props.translations}
           locale={this.props.locale}
           largeScreen={this.props.largeScreen}
+          setInfoWindow={this.props.setInfoWindow}
+          showInfoWindow={this.props.showInfoWindow}
         />
         
         { this.props.largeScreen &&

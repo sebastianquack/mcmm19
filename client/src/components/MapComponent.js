@@ -123,12 +123,6 @@ class MapComponent extends Component {
     this.infoWindowRef = React.createRef();
     this.markers = [];
     this.lines = [];
-    this.infoWindows = [];
-
-    this.state = {
-      showInfoWindow: null
-    }
-
     this.fetchData = this.fetchData.bind(this);
     this.drawMap = this.drawMap.bind(this);
   } 
@@ -241,7 +235,7 @@ class MapComponent extends Component {
 
         marker.entries = this.state.entries[k];
         marker.addListener('click', ()=> {
-          this.setState({showInfoWindow: marker.entries});
+          this.props.setInfoWindow(marker.entries);
         });
 
         this.markers.push(marker)
@@ -264,7 +258,7 @@ class MapComponent extends Component {
       });
 
       google.maps.event.addListener(this.map, "click", (e)=> {
-        this.setState({showInfoWindow: null});
+        this.props.setInfoWindow(null);
       });
         
       this.lines.forEach(l=>l.setMap(null));
@@ -318,12 +312,12 @@ class MapComponent extends Component {
   render() {
     return (
       [<MapContainer ref={this.mapContainerRef} />,
-        <InfoWindowPlacer>{this.state.showInfoWindow && <InfoWindow 
-          entries={this.state.showInfoWindow} 
+        <InfoWindowPlacer>{this.props.showInfoWindow && <InfoWindow 
+          entries={this.props.showInfoWindow} 
           setUserFilter={this.props.setUserFilter}
           translations={this.props.translations}
           locale={this.props.locale}
-          close={()=>this.setState({showInfoWindow: null})}
+          close={()=>this.props.showInfoWindow(null)}
           largeScreen={this.props.largeScreen}
           />
         }

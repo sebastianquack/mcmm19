@@ -32,6 +32,7 @@ class BaseContainer extends Component {
       userFilter: [],
       musicianFilter: null,
       yearFilter: null,
+      showInfoWindow: null,
       translations: [],
       locale: "de",
       projectionId: null
@@ -43,6 +44,7 @@ class BaseContainer extends Component {
     this.setLocale = this.setLocale.bind(this);
     this.pollFilter = this.pollFilter.bind(this);
     this.handleFilterClose = this.handleFilterClose.bind(this);
+    this.setInfoWindow = this.setInfoWindow.bind(this);
 
   }
 
@@ -60,7 +62,8 @@ class BaseContainer extends Component {
     this.setState({
       userFilter: filter,
       musicianFilter: null,
-      yearFilter: null
+      yearFilter: null,
+      showInfoWindow: null
     }, ()=>{
       if(this.state.currentPage != "home") {
         this.navigate("home");  
@@ -72,7 +75,8 @@ class BaseContainer extends Component {
     this.setState({
       musicianFilter: musician,
       userFilter: [],
-      yearFilter: null
+      yearFilter: null,
+      showInfoWindow: null
     })
   }
 
@@ -80,8 +84,13 @@ class BaseContainer extends Component {
     this.setState({
       musicianFilter: null,
       userFilter: [],
-      yearFilter: year
+      yearFilter: year,
+      showInfoWindow: null
     })
+  }
+
+  setInfoWindow(entries) {
+    this.setState({showInfoWindow: entries});
   }
 
   pollFilter(id) {
@@ -188,7 +197,8 @@ class BaseContainer extends Component {
       menuOpen: page !== "home",
       currentPage: page,
       currentEntry: entry,
-      pageKey: entry
+      pageKey: entry,
+      showInfoWindow: null
     });
     if(page != "list") {
       let pathName = window.location.pathname + (this.state.projectionId ? "?projection_id=" + this.state.projectionId : "")
@@ -227,6 +237,8 @@ class BaseContainer extends Component {
         largeScreen={this.state.largeScreen}
         translations={this.state.translations}
         locale={this.state.locale}
+        setInfoWindow={this.setInfoWindow}
+        showInfoWindow={this.state.showInfoWindow}
         />,
       "list": <ListPage 
         mcmmId={this.state.mcmmId} editEntry={(entry)=>{this.navigate("edit", entry)}}
