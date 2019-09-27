@@ -20,6 +20,7 @@ export function t(translations, key, locale) {
 }
 
 export function capitalize(s) {
+  if(!s.replace) return ""
     return s.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
 }
 

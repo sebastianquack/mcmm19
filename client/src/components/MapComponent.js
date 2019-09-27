@@ -30,13 +30,15 @@ class InfoWindow extends Component {
     let entries = this.props.entries.map((e, index)=>
       <Entry>
         
-        <CloseButton src="/images/closeWhite.png"/>
+        <CloseButton onClick={this.props.close} src="/images/closeWhite.png"/>
         <PageNum>{this.state.entryIndex + 1}/{this.props.entries.length}</PageNum>
         <Note>
         {e.note ? '"'+e.note+'"' : t(this.props.translations, "ohne_worte", this.props.locale)}
         </Note>
         <p>
-        {e.year}, {t(this.props.translations, "listening_to", this.props.locale)} {capitalize(e.musician)} in {capitalize(e.city)}
+        {e.year}, {t(this.props.translations, "listening_to", this.props.locale)} <MusicianLink
+          onClick={()=>{this.props.setMusicianFilter(e.musician)}}
+        >>{capitalize(e.musician)}</MusicianLink> in {capitalize(e.city)}
         </p> 
         <Link onClick={()=>{this.props.setUserFilter([e.user_id])}}>{t(this.props.translations, "zur_bio", this.props.locale)}</Link>
         {this.props.entries.length > 1 &&
@@ -46,7 +48,7 @@ class InfoWindow extends Component {
     );  
     
     return (
-      <InfoWindowContainer largeScreen={this.props.largeScreen} onClick={this.props.close}>{entries[this.state.entryIndex]}</InfoWindowContainer>
+      <InfoWindowContainer largeScreen={this.props.largeScreen}>{entries[this.state.entryIndex]}</InfoWindowContainer>
     )
   }
 }
@@ -104,6 +106,13 @@ const NextLink = styled.span`
   margin-top: 1rem;
   margin-bottom: 0px;
   display: block;
+  :hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+`
+
+const MusicianLink = styled.span`
   :hover {
     text-decoration: underline;
     cursor: pointer;
@@ -317,8 +326,9 @@ class MapComponent extends Component {
           setUserFilter={this.props.setUserFilter}
           translations={this.props.translations}
           locale={this.props.locale}
-          close={()=>this.props.showInfoWindow(null)}
+          close={()=>this.props.setInfoWindow(null)}
           largeScreen={this.props.largeScreen}
+          setMusicianFilter={this.props.setMusicianFilter}
           />
         }
         </InfoWindowPlacer>

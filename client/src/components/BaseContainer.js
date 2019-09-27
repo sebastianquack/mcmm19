@@ -72,6 +72,7 @@ class BaseContainer extends Component {
   }
 
   setMusicianFilter(musician) {
+    console.log("setMusicianFilter", musician);
     this.setState({
       musicianFilter: musician,
       userFilter: [],
