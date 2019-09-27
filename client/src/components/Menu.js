@@ -31,8 +31,9 @@ const LocaleOption = styled.li`
   text-decoration: none;
   list-style: none;
   font-size: 16px;
+  font-family: "NeutraTextLight";
   span { 
-    font-weight: ${props=>props.active ? "bold" : "default"}; 
+    font-family: ${props=>props.active ? "NeutraText" : "NeutraTextLight"}; 
     padding: 5px;
   }
   :hover {cursor: ${props=>props.active ? "default" : "pointer"}};
