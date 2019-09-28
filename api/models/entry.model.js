@@ -4,7 +4,8 @@ let RestHapi = require('rest-hapi')
 const axios = require('axios');
 
 addCityLocation = async (payload) => {
-  let response = await axios.get("https://maps.googleapis.com/maps/api/geocode/json?address="+payload.city+"&key="+process.env.GEOCODING_KEY);  
+  let response = await axios.get("https://maps.googleapis.com/maps/api/geocode/json",
+    {params: {address: payload.city, key: process.env.GEOCODING_KEY}});  
           
   if(response.status == 200) {
     console.log(response.data.results[0]);  
