@@ -33,8 +33,7 @@ class InfoWindow extends Component {
         <CloseButton onClick={this.props.close} src="/images/closeWhite.png"/>
         <PageNum><Bold>{capitalize(e.city)}</Bold> {this.state.entryIndex + 1}/{this.props.entries.length}</PageNum>
         <p>
-        <Bold>{e.year}</Bold> {t(this.props.translations, "listening_to", this.props.locale)} <MusicianLink
-          onClick={()=>{this.props.setMusicianFilter(e.musician)}}
+        <Bold>{e.year}</Bold> <MusicianLink onClick={()=>{this.props.setMusicianFilter(e.musician)}}
         >>&nbsp;{capitalize(e.musician)}</MusicianLink>
         </p> 
         <Note>

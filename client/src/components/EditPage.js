@@ -126,7 +126,7 @@ class EditPage extends Component {
           <Label>{t(this.props.translations, "musician_prompt", this.props.locale)}</Label> 
           
           <ReactAutocomplete
-            items={this.state.musicians.map((m)=>{return {value: m}})}
+            items={this.state.musicians.map((m)=>{return {value: capitalize(m)}})}
             getItemValue={item => item.value}
             shouldItemRender={(item, value) => item.value.toLowerCase().indexOf(value.toLowerCase()) > -1}
             renderItem={(item, highlighted) =>
@@ -148,7 +148,7 @@ class EditPage extends Component {
           <Label>{t(this.props.translations, "city_prompt", this.props.locale)}</Label> 
           
           <ReactAutocomplete
-            items={this.state.cities.map((c)=>{return {value: c}})}
+            items={this.state.cities.map((c)=>{return {value: capitalize(c)}})}
             getItemValue={item => item.value}
             shouldItemRender={(item, value) => item.value.toLowerCase().indexOf(value.toLowerCase()) > -1}
             renderItem={(item, highlighted) =>
