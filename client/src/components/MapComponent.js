@@ -31,15 +31,15 @@ class InfoWindow extends Component {
       <Entry>
         
         <CloseButton onClick={this.props.close} src="/images/closeWhite.png"/>
-        <PageNum>{this.state.entryIndex + 1}/{this.props.entries.length}</PageNum>
+        <PageNum><Bold>{capitalize(e.city)}</Bold> {this.state.entryIndex + 1}/{this.props.entries.length}</PageNum>
+        <p>
+        <Bold>{e.year}</Bold> {t(this.props.translations, "listening_to", this.props.locale)} <MusicianLink
+          onClick={()=>{this.props.setMusicianFilter(e.musician)}}
+        >>&nbsp;{capitalize(e.musician)}</MusicianLink>
+        </p> 
         <Note>
         {e.note ? '"'+e.note+'"' : t(this.props.translations, "ohne_worte", this.props.locale)}
         </Note>
-        <p>
-        {e.year}, {t(this.props.translations, "listening_to", this.props.locale)} <MusicianLink
-          onClick={()=>{this.props.setMusicianFilter(e.musician)}}
-        >>&nbsp;{capitalize(e.musician)}</MusicianLink> in {capitalize(e.city)}
-        </p> 
         <Link onClick={()=>{this.props.setUserFilter([e.user_id])}}>{t(this.props.translations, "zur_bio", this.props.locale)}</Link>
         {this.props.entries.length > 1 &&
           <NextLink largeScreen={this.props.largeScreen} onClick={(e)=>{e.stopPropagation(); this.nextEntry();}}>{t(this.props.translations, "next_entry", this.props.locale)}</NextLink>}
@@ -53,6 +53,10 @@ class InfoWindow extends Component {
   }
 }
 
+const Bold = styled.span`
+  font-family: NeutraText;
+`
+
 const InfoWindowContainer = styled.div`
   position: fixed;
   top: 50%;
@@ -65,6 +69,7 @@ const InfoWindowContainer = styled.div`
   color: #fff;
   padding: 25px;
   font-family: NeutraTextDemi;
+  font-size: 1.2rem;
   max-height: 100%;
   overflow-y: scroll;
   z-index: 200;
@@ -90,12 +95,14 @@ const PageNum = styled.p`
 
 const Note = styled.div`
   font-family: NeutraTextLightItalic;
-  font-size: 2rem;
+  font-size: 1.7rem;
   margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
 `
 
 const Link = styled.span`
   display: block;
+  font-size: 1rem;
   :hover {
     text-decoration: underline;
     cursor: pointer;
@@ -105,6 +112,8 @@ const Link = styled.span`
 const NextLink = styled.span`
   margin-top: 1rem;
   margin-bottom: ${props => props.largeScreen ? "0rem" : "1rem"};
+  float: right;
+  font-size: 1rem;
   display: block;
   :hover {
     text-decoration: underline;
@@ -113,6 +122,7 @@ const NextLink = styled.span`
 `
 
 const MusicianLink = styled.span`
+  font-family: NeutraText;
   :hover {
     text-decoration: underline;
     cursor: pointer;
