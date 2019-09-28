@@ -364,7 +364,7 @@ module.exports = function (mongoose) {
 
                         // no filter
                         // all entries of this musician
-                        count = await model.find({musician: musician}).count();
+                        count = await model.find({isDeleted: {$ne: true}, musician: musician}).count();
                       }
 
                     }
