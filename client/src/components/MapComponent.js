@@ -200,8 +200,7 @@ class MapComponent extends Component {
         url: "/images/marker.svg", // url
         scaledSize: {height: 30, width: 30}, // scaled size
         origin: {x:0, y:0}, // origin
-        anchor: {x:12.5, y:12.5}, // anchor
-        labelOrigin: new google.maps.Point(12.5, 30)
+        anchor: {x:12.5, y:12.5} // anchor
       };
 
       const iconResized = (size) => {
@@ -209,6 +208,7 @@ class MapComponent extends Component {
         const scaled = base * size
         return {
         ...icon,
+        labelOrigin: new google.maps.Point(12.5, scaled + 10),
         scaledSize: { 
           height: scaled,
           width: scaled
