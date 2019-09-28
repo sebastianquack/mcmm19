@@ -37,6 +37,7 @@ class EditPage extends Component {
   }
 
   handleSubmit = (event)=> {
+    if(!this.state.musician || !this.state.city || !this.state.year) return;
     console.log(this.state);
     this.setState({processing: true});
 
