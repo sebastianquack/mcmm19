@@ -140,12 +140,12 @@ class EditPage extends Component {
             value={capitalize(this.state.musician)}
             onChange={(e) => this.setState({musician: e.target.value, changed: true})}
             onSelect={(val) => this.setState({musician: val, changed: true})}
-            wrapperStyle={{display: "block"}}
-            menuStyle={menuStyle}
             inputProps={{style: autocompleteInputStyle}}
+            wrapperStyle={wrapperStyle}
+            menuStyle={menuStyle}
           />
 
-          <br/>
+          <br/><br/>
           <Label>{t(this.props.translations, "city_prompt", this.props.locale)}</Label> 
           
           <ReactAutocomplete
@@ -163,12 +163,12 @@ class EditPage extends Component {
             value={capitalize(this.state.city)}
             onChange={(e) => this.setState({city: e.target.value, changed: true})}
             onSelect={(val) => this.setState({city: val, changed: true})}
-            wrapperStyle={{display: "block", opacity: 1}}
-            menuStyle={menuStyle}
             inputProps={{style: autocompleteInputStyle}}
+            wrapperStyle={wrapperStyle}
+            menuStyle={menuStyle}
           />
 
-          <br/>
+          <br/><br/>
           <Label>{t(this.props.translations, "year_prompt", this.props.locale)}</Label>
           <input 
             autoComplete="off" 
@@ -207,17 +207,26 @@ const Label = styled.label`
 
 const autocompleteInputStyle = {};
 
+const wrapperStyle = {
+  display: 'inline-block',
+  position: 'relative',
+}
+
 const menuStyle = {
+  position: 'absolute',
+  width: '100%',
+  top: '4rem',
+  left: '0',
   borderRadius: '3px',
   boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
-  background: 'rgba(255, 255, 255, 0.9)',
+  background: 'rgba(255, 255, 255, 1)',
   padding: '2px 0',
-  fontSize: '100%',
-  position: 'fixed',
-  overflow: 'auto',
-  //maxHeight: '50%', // TODO: don't cheat, let it flow to the bottom
-  maxHeight: "75px"
+  fontSize: '120%',
+  overflow: 'scroll',
+  maxHeight: '200px',
+  zIndex: 1
 }
+
 
 const Form = styled.form`
   input, textarea {
@@ -246,7 +255,7 @@ const Form = styled.form`
     font-family: NeutraTextLightItalic;
   }
 
-  margin-bottom: 2rem;
+  margin-bottom: 10rem;
 `
 const Button = styled.div`
   width: 100%;
