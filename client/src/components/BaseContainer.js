@@ -129,12 +129,15 @@ class BaseContainer extends Component {
 
   async componentDidMount() {
 
-    // setTimeout(()=>this.navigate("scan"), 100  )
+    let response = await axios.get(apiUrl + "/translation");
+    //console.log(response);
+    this.setState({translations: response.data.docs});
 
-    disableBodyScroll(document.querySelector('body'))
-
-    let queryParams = new URLSearchParams(window.location.search); 
-    let projection_id = queryParams.get("projection_id");
+    let projection_id = null;
+    if(URLSearchParams) {
+      let queryParams = new URLSearchParams(window.location.search); 
+      projection_id = queryParams.get("projection_id");
+    }
     
     if(projection_id) {
 
@@ -165,10 +168,9 @@ class BaseContainer extends Component {
       localStorage.setItem('mcmmId', mcmmId);    
   
     }
+
+    disableBodyScroll(document.querySelector('body'))
   
-    let response = await axios.get(apiUrl + "/translation");
-    //console.log(response);
-    this.setState({translations: response.data.docs});
   }
 
   componentWillUnmount() {
